@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <iomanip>
+#include <numeric>
 using std::string;
 using std::vector;
 struct studentas {
@@ -10,12 +11,11 @@ struct studentas {
     int exam;
 };
 void print(studentas& st) {
-    std::cout << std::left << std::setw(10) <<  st.vardas << "|";
-    std::cout << std::left << std::setw(10) << st.pavarde << "|";
-    for (int i : st.paz) {
-        std::cout << std::right << std::setw(10) << i << "|";
-    }
-    std::cout << std::right << std::setw(10) << st.exam << "|"<<std::endl;
+    std::cout << std::left << std::setw(17) <<  st.vardas << "|";
+    std::cout << std::left << std::setw(17) << st.pavarde << "|";
+    float suma = std::accumulate(st.paz.begin(), st.paz.end(), 0) + st.exam;
+    float vidurkis = suma / (st.paz.size() + 1);
+    std::cout << std::right << std::setw(17) << std::fixed<< std::setprecision(2)<< vidurkis << "|"<<std::endl;
 }
 
 int main(){
@@ -51,8 +51,9 @@ int main(){
         st.paz.clear();
         st.exam = 0;
     }
-
-
+    std::cout << std::left << std::setw(17) <<  "Vardas" << "|";
+    std::cout << std::left << std::setw(17) << "Pavardė" << "|";
+    std::cout << std::left << std::setw(17) << "Galutinis (vid.)" << "|"<<std::endl;
     for (studentas& stud : grupe) {
         print(stud);
 
