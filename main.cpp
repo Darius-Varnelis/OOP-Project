@@ -65,11 +65,20 @@ int main(){
         int j = 1;
         std::cout << "Įveskite " << j <<"-ąjį pažymį (arba Enter, kad užbaigti): ";
         j++;
-        while (std::getline(std::cin, eilute) && !eilute.empty()) {
-            std::cout << "Įveskite " << j <<"-ąjį pažymį (arba Enter, kad užbaigti): ";
-            int paz = std::stoi(eilute);
-            st.paz.push_back(paz);
-            j++;
+        while (!teisinga) {
+            try {
+                while (std::getline(std::cin, eilute) && !eilute.empty()) {
+                    int paz = std::stoi(eilute);
+                    st.paz.push_back(paz);
+                    std::cout << "Įveskite " << j <<"-ąjį pažymį (arba Enter, kad užbaigti): ";
+                    j++;
+
+                }
+
+            } catch(const std::invalid_argument&) {
+                    std::cout << "Įvestas ne skaičius!" << std::endl;
+                    std::cout << "Įveskite " << j-1 <<"-ąjį pažymį (arba Enter, kad užbaigti): ";
+            }
         }
 
         std::cout << "Įveskite egzamino rezultatą: ";
