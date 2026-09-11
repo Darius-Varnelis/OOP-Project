@@ -1,10 +1,10 @@
 #include <algorithm>
+#include <cmath>
+#include <iomanip>
 #include <iostream>
+#include <numeric>
 #include <string>
 #include <vector>
-#include <iomanip>
-#include <numeric>
-#include<cmath>
 using std::string;
 using std::vector;
 struct studentas {
