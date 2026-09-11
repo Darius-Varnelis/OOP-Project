@@ -74,12 +74,14 @@ int main(){
                     j++;
 
                 }
+                teisinga = true;
 
             } catch(const std::invalid_argument&) {
                     std::cout << "Įvestas ne skaičius!" << std::endl;
                     std::cout << "Įveskite " << j-1 <<"-ąjį pažymį (arba Enter, kad užbaigti): ";
             }
         }
+        teisinga = false;
 
         std::cout << "Įveskite egzamino rezultatą: ";
 
