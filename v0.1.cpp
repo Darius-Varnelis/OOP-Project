@@ -64,14 +64,19 @@ int main(){
         std::cin >> st.pavarde;
         std::cin.ignore();
         int j = 1;
-        std::cout << "Įveskite " << j <<"-ąjį pažymį (arba Enter, kad užbaigti): ";
+        std::cout << "Įveskite " << j <<"-ąjį pažymį (Enter, kad užbaigti; \"r\", kad sugeneruoti atsitiktinai): ";
         j++;
         while (!teisinga) {
             try {
                 while (std::getline(std::cin, eilute) && !eilute.empty()) {
-                    int paz = std::stoi(eilute);
-                    st.paz.push_back(paz);
-                    std::cout << "Įveskite " << j <<"-ąjį pažymį (arba Enter, kad užbaigti): ";
+                    if (eilute == "r") {
+                        st.paz.push_back(std::rand()%11);
+                        std::cout << "Įvestas sk. "<<st.paz.back()<<std::endl;
+                    } else {
+                        int paz = std::stoi(eilute);
+                        st.paz.push_back(paz);
+                    }
+                    std::cout << "Įveskite " << j <<"-ąjį pažymį (Enter, kad užbaigti; \"r\", kad sugeneruoti atsitiktinai): ";
                     j++;
 
                 }
@@ -79,18 +84,24 @@ int main(){
 
             } catch(const std::invalid_argument&) {
                     std::cout << "Įvestas ne skaičius!" << std::endl;
-                    std::cout << "Įveskite " << j-1 <<"-ąjį pažymį (arba Enter, kad užbaigti): ";
+                    std::cout << "Įveskite " << j <<"-ąjį pažymį (Enter, kad užbaigti; \"r\", kad sugeneruoti atsitiktinai): ";
             }
         }
         teisinga = false;
 
-        std::cout << "Įveskite egzamino rezultatą: ";
+        std::cout << "Įveskite egzamino rezultatą (\"r\", kad generuoti atsitikinai): ";
 
 
         while (!teisinga) {
             try {
                 std::getline(std::cin, eilute);
-                st.exam = std::stoi(eilute);
+                if (eilute == "r") {
+                    st.exam = std::rand()%11;
+                    std::cout << "Įvestas sk. "<<st.exam<<std::endl;
+                }
+                else {
+                    st.exam = std::stoi(eilute);
+                }
                 teisinga = true;
             } catch (const std::invalid_argument&) {
                 std::cout << "Įvestas ne skaičius, bandykite vėl: ";
