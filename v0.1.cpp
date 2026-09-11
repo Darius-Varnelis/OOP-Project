@@ -12,28 +12,29 @@ struct studentas {
     vector<int> paz;
     int exam;
 };
-int median(vector<int> paz, int exam) {
-    paz.push_back(exam);
+int mediana(vector<int> paz) {
     sort(paz.begin(), paz.end());
     if (paz.size() % 2 == 1) {
         return paz[paz.size()/2];
     }
     return (paz[(paz.size()-1)/2]+paz[paz.size()/2])/2;
 }
+int vidurkis(vector<int> paz) {
+    return std::accumulate(paz.begin(), paz.end(), 0)/paz.size();
+}
 void print(studentas& st, int stats) {
     std::cout << std::left << std::setw(20) <<  st.vardas << "|";
     std::cout << std::left << std::setw(20) << st.pavarde << "|";
-    float suma = std::accumulate(st.paz.begin(), st.paz.end(), 0) + st.exam;
-    float vidurkis = suma / (st.paz.size() + 1);
-    float mediana = median(st.paz, st.exam);
+    float vid = 0.4*vidurkis(st.paz) + 0.6*st.exam;
+    float med = 0.4*mediana(st.paz)+0.6*st.exam;
     if (stats == 0) {
-        std::cout << std::right << std::setw(20) << std::fixed<< std::setprecision(2)<< vidurkis << "|"<<std::endl;
+        std::cout << std::right << std::setw(20) << std::fixed<< std::setprecision(2)<< vid << "|"<<std::endl;
     }
     else if (stats == 1) {
-        std::cout << std::right << std::setw(20) << std::fixed<< std::setprecision(2)<< mediana << "|"<<std::endl;
+        std::cout << std::right << std::setw(20) << std::fixed<< std::setprecision(2)<< med << "|"<<std::endl;
     }
     else if (stats == 2) {
-        std::cout << std::right << std::setw(20) << std::fixed<< std::setprecision(2)<< vidurkis << "|"<< std::setw(20) << mediana << "|"<<std::endl;
+        std::cout << std::right << std::setw(20) << std::fixed<< std::setprecision(2)<< vid << "|"<< std::setw(20) << med << "|"<<std::endl;
     }
 }
 
