@@ -197,6 +197,5 @@ int main(){
 
     for (studentas& stud : grupe) {
         print(stud, stats);
-
     }
 }
