@@ -164,7 +164,6 @@ int main(){
             std::cout << "Įveskite egzamino rezultatą: ";
             ivesti_sk(st.exam);
         }
-
         grupe.push_back(st);
         st.pavarde.clear();
         st.vardas.clear();
