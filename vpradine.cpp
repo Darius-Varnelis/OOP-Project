@@ -22,6 +22,20 @@ int mediana(vector<int> paz) {
 int vidurkis(vector<int> paz) {
     return std::accumulate(paz.begin(), paz.end(), 0)/paz.size();
 }
+void ivesti_sk(int& sk) {
+    bool teisinga = false;
+    std::string line;
+    while (!teisinga) {
+        try {
+            std::getline(std::cin, line);
+            sk = std::stoi(line);
+            teisinga = true;
+        } catch (const std::invalid_argument&) {
+            std::cout << "Įvestas ne skaičius, bandykite vėl: ";
+        }
+    }
+    teisinga = false;
+}
 void print(studentas& st, int stats) {
     std::cout << std::left << std::setw(20) <<  st.vardas << "|";
     std::cout << std::left << std::setw(20) << st.pavarde << "|";
@@ -43,19 +57,45 @@ int main(){
     studentas st;
     int studkiekis;
     int stats = -1;
+    bool zinomassk = false;
+    bool ran = false;
     bool teisinga = false;
     std::string eilute;
-    std::cout << "Kiek yra studentų? ";
-    while (!teisinga) {
-        try {
-            std::getline(std::cin, eilute);
-            studkiekis = std::stoi(eilute);
-            teisinga = true;
-        } catch (const std::invalid_argument&) {
-            std::cout << "Įvestas ne skaičius, bandykite vėl: ";
+
+    std::cout << "Ar namų darbų ir egzaminų rezultatus generuoti atsitiktinai? [y/n] ";
+    while (std::getline(std::cin,eilute)) {
+        if (eilute == "y") {
+            ran = true;
+            break;
+
         }
+        if (eilute == "n") {
+            ran = false;
+            break;
+
+        }
+        std::cout << "Įveskite \"n\"(ne) arba \"y\"(taip)" << std::endl;
+        std::cout << "Ar namų darbų ir egzaminų rezultatus generuoti atsitiktinai? [y/n] ";
     }
-    teisinga = false;
+    if (!ran) {
+        std::cout << "Ar žinomas namų darbų skaičius? [y/n] ";
+        while (std::getline(std::cin,eilute) ) {
+            if (eilute == "y") {
+                zinomassk = true;
+                break;
+            }
+            if (eilute == "n") {
+                zinomassk = false;
+                break;
+            }
+            std::cout << "Įveskite \"n\" arba \"y\"" << std::endl;
+            std::cout << "Ar žinomas namų darbų skaičius? [y/n] ";
+        }
+    }else {
+        zinomassk = true;
+    }
+    std::cout << "Kiek yra studentų? ";
+    ivesti_sk(studkiekis);
     for(int i = 0; i < studkiekis; i++) {
         std::cout << "Įveskite vardą: ";
         std::cin >> st.vardas;
@@ -63,51 +103,68 @@ int main(){
         std::cout <<"Įveskite pavardę: ";
         std::cin >> st.pavarde;
         std::cin.ignore();
-        int j = 1;
-        std::cout << "Įveskite " << j <<"-ąjį pažymį (Enter, kad užbaigti; \"r\", kad sugeneruoti atsitiktinai): ";
-        j++;
-        while (!teisinga) {
-            try {
-                while (std::getline(std::cin, eilute) && !eilute.empty()) {
-                    if (eilute == "r") {
-                        st.paz.push_back(std::rand()%11);
-                        std::cout << "Įvestas sk. "<<st.paz.back()<<std::endl;
-                    } else {
+
+        int kiekis;
+        if (zinomassk) {
+            std::cout << "Kiek studentas turi pažymių? ";
+            ivesti_sk(kiekis);
+            while (kiekis == 0) {
+                std::cout << "Kiekis negali būti 0! " << std::endl;
+                std::cout << "Kiek studentas turi pažymių? ";
+                ivesti_sk(kiekis);
+            }
+            int sk;
+            if (!ran) {
+                for (int j = 0; j < kiekis; j++) {
+                    std::cout << "Įveskite " << j+1 <<"-ąjį pažymį";
+                    ivesti_sk(sk);
+                    st.paz.push_back(sk);
+                }
+            } else {
+                std::cout << "Suvesti atsitiktiniai pažymiai: ";
+                for (int j = 0; j < kiekis; j++) {
+                    sk = std::rand()%11;
+                    st.paz.push_back(sk);
+                    std::cout << sk <<" ";
+                }
+                std::cout << std::endl;
+            }
+        }
+
+        if (!zinomassk) {
+            int j = 1;
+            std::cout << "Įveskite 1-ąjį pažymį (Enter, kad užbaigti): ";
+
+            while (!teisinga) {
+                try {
+                    while (std::getline(std::cin, eilute) && !eilute.empty()) {
                         int paz = std::stoi(eilute);
                         st.paz.push_back(paz);
+                        j++;
+                        std::cout << "Įveskite " << j <<"-ąjį pažymį (Enter, kad užbaigti): ";
+
+
                     }
-                    std::cout << "Įveskite " << j <<"-ąjį pažymį (Enter, kad užbaigti; \"r\", kad sugeneruoti atsitiktinai): ";
-                    j++;
+                    teisinga = true;
 
-                }
-                teisinga = true;
-
-            } catch(const std::invalid_argument&) {
+                } catch(const std::invalid_argument&) {
                     std::cout << "Įvestas ne skaičius!" << std::endl;
-                    std::cout << "Įveskite " << j <<"-ąjį pažymį (Enter, kad užbaigti; \"r\", kad sugeneruoti atsitiktinai): ";
-            }
-        }
-        teisinga = false;
-
-        std::cout << "Įveskite egzamino rezultatą (\"r\", kad generuoti atsitikinai): ";
-
-
-        while (!teisinga) {
-            try {
-                std::getline(std::cin, eilute);
-                if (eilute == "r") {
-                    st.exam = std::rand()%11;
-                    std::cout << "Įvestas sk. "<<st.exam<<std::endl;
+                    std::cout << "Įveskite " << j <<"-ąjį pažymį (Enter, kad užbaigti): ";
                 }
-                else {
-                    st.exam = std::stoi(eilute);
-                }
-                teisinga = true;
-            } catch (const std::invalid_argument&) {
-                std::cout << "Įvestas ne skaičius, bandykite vėl: ";
             }
+            teisinga = false;
         }
-        teisinga = false;
+
+
+        if (ran) {
+            st.exam = std::rand()%11;
+            std::cout << "Atsitiktinis egzamino rezultatas: "<<st.exam<<std::endl;
+        }
+        else {
+            std::cout << "Įveskite egzamino rezultatą: ";
+            ivesti_sk(st.exam);
+        }
+
         grupe.push_back(st);
         st.pavarde.clear();
         st.vardas.clear();
@@ -115,7 +172,7 @@ int main(){
         st.exam = 0;
     }
     std::cout << "Kokių norite duomenų:" << std::endl<< "[0] - vidurkio" << std::endl << "[1] - medianos" << std::endl << "[2] - abiejų"<<std::endl;
-    while (!teisinga and (stats != 0 or stats != 1 or stats != 2)) {
+    while (!teisinga && (stats != 0 || stats != 1 || stats != 2)) {
         try {
             std::getline(std::cin, eilute);
             stats = std::stoi(eilute);
