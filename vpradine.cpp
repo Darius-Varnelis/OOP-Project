@@ -102,9 +102,21 @@ int nuskaityti_pazymi(std::istream& stream, size_t eilutes_nr, const string& pav
     return pazymys;
 }
 
+size_t utf8_ilgis(const string& tekstas) {
+    size_t ilgis = 0;
+    for (unsigned char c : tekstas) {
+        if ((c & 0xC0) != 0x80) ilgis++;
+    }
+    return ilgis;
+}
+
+int utf8_plotis(const string& tekstas) {
+    return static_cast<int>(PLOTIS + tekstas.size() - utf8_ilgis(tekstas));
+}
+
 void spausdinti(const studentas& st, Statistika statistika) {
-    cout << std::left << std::setw(PLOTIS) << st.vardas << "|";
-    cout << std::left << std::setw(PLOTIS) << st.pavarde << "|";
+    cout << std::left << std::setw(utf8_plotis(st.vardas)) << st.vardas << "|";
+    cout << std::left << std::setw(utf8_plotis(st.pavarde)) << st.pavarde << "|";
     double vid = 0.4 * vidurkis(st.paz) + 0.6 * st.exam;
     double med = 0.4 * mediana(st.paz) + 0.6 * st.exam;
     if (statistika == Statistika::Vidurkis) {
@@ -128,9 +140,11 @@ int main() {
     bool zinomas_sk = false;
     string eilute;
 
-    cout << "Ar namų darbų ir egzaminų rezultatus įvesti ranka, nuskaityti nuo failo ar generuoti atsitiktinai?\n";
-    const auto rezimas = static_cast<Rezimas>(ivesti_sk(
-        "Spauskite [0], kad įvesti ranka; [1], kad nuskaityti iš failo; [2], kad generuoti atsitiktinai. ", 0, 2));
+    cout << "Ar namų darbų ir egzaminų rezultatus įvesti ranka, nuskaityti nuo failo ar generuoti atsitiktinai?\n"
+         << "[0] - įvesti ranka\n"
+         << "[1] - nuskaityti iš failo\n"
+         << "[2] - generuoti atsitiktinai\n";
+    const auto rezimas = static_cast<Rezimas>(ivesti_sk("Pasirinkite programos režimą: ", 0, 2));
 
     if (rezimas == Rezimas::Ivesti) {
         cout << "Ar žinomas namų darbų skaičius? [y/n] ";
@@ -258,7 +272,7 @@ int main() {
     const auto statistika = static_cast<Statistika>(ivesti_sk("Pasirinkite: ", 0, 2));
 
     cout << std::left << std::setw(PLOTIS) << "Vardas" << "|";
-    cout << std::left << std::setw(PLOTIS) << "Pavarde" << "|";
+    cout << std::left << std::setw(utf8_plotis("Pavardė")) << "Pavardė" << "|";
     if (statistika == Statistika::Vidurkis) {
         cout << std::left << std::setw(PLOTIS) << "Galutinis (vid.)" << "|\n";
     } else if (statistika == Statistika::Mediana) {
@@ -267,6 +281,11 @@ int main() {
         cout << std::left << std::setw(PLOTIS) << "Galutinis (vid.)" << "|" << std::setw(PLOTIS) << "Galutinis (med.)"
              << "|\n";
     }
+
+    std::sort(grupe.begin(), grupe.end(), [](const studentas& a, const studentas& b) {
+        if (a.pavarde != b.pavarde) return a.pavarde < b.pavarde;
+        return a.vardas < b.vardas;
+    });
 
     for (const studentas& stud : grupe) {
         spausdinti(stud, statistika);
