@@ -36,14 +36,13 @@ struct studentas {
     int exam = 0;
 };
 
-double mediana(const vector<int>& paz) {
+double mediana(vector<int> paz) {
     if (paz.empty()) return 0.0;
-    vector<int> kopija = paz;
-    std::sort(kopija.begin(), kopija.end());
-    if (kopija.size() % 2 == 1) {
-        return kopija[kopija.size() / 2];
+    std::sort(paz.begin(), paz.end());
+    if (paz.size() % 2 == 1) {
+        return paz[paz.size() / 2];
     }
-    return (kopija[(kopija.size() - 1) / 2] + kopija[kopija.size() / 2]) / 2.0;
+    return (paz[(paz.size() - 1) / 2] + paz[paz.size() / 2]) / 2.0;
 }
 
 double vidurkis(const vector<int>& paz) {
