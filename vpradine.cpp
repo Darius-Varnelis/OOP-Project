@@ -1,5 +1,4 @@
 #include <algorithm>
-#include <cmath>
 #include <cstdlib>
 #include <ctime>
 #include <fstream>
@@ -11,20 +10,36 @@
 #include <stdexcept>
 #include <string>
 #include <vector>
+#ifdef _WIN32
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif
+#include <windows.h>
+#endif
 
+using std::cin;
+using std::cout;
 using std::string;
 using std::vector;
+
+constexpr int MIN_PAZ = 0;
+constexpr int MAX_PAZ = 10;
+constexpr int BE_RIBOS = std::numeric_limits<int>::max();
+constexpr int PLOTIS = 20;
+
+enum class Rezimas { Ivesti, Nuskaityti, Generuoti };
+enum class Statistika { Vidurkis, Mediana, Abu };
 
 struct studentas {
     string vardas, pavarde;
     vector<int> paz;
-    int exam;
+    int exam = 0;
 };
 
 double mediana(const vector<int>& paz) {
     if (paz.empty()) return 0.0;
     vector<int> kopija = paz;
-    sort(kopija.begin(), kopija.end());
+    std::sort(kopija.begin(), kopija.end());
     if (kopija.size() % 2 == 1) {
         return kopija[kopija.size() / 2];
     }
@@ -36,273 +51,225 @@ double vidurkis(const vector<int>& paz) {
     return static_cast<double>(std::accumulate(paz.begin(), paz.end(), 0)) / paz.size();
 }
 
-void ivesti_sk(int& sk) {
-    bool teisinga = false;
-    std::string line;
-    while (!teisinga) {
-        if (!std::getline(std::cin, line)) {
-            sk = 0;
-            return;
-        }
-        try {
-            sk = std::stoi(line);
-            teisinga = true;
-        } catch (const std::invalid_argument&) {
-            std::cout << "Įvestas ne skaičius, bandykite vėl: ";
-        } catch (const std::out_of_range&) {
-            std::cout << "Įvestas per didelis skaičius, bandykite vėl: ";
-        }
+bool i_skaiciu(const string& tekstas, int& rezultatas) {
+    try {
+        size_t pabaiga;
+        int sk = std::stoi(tekstas, &pabaiga);
+        if (tekstas.find_first_not_of(" \t\r", pabaiga) != string::npos) return false;
+        rezultatas = sk;
+        return true;
+    } catch (const std::invalid_argument&) {
+        return false;
+    } catch (const std::out_of_range&) {
+        return false;
     }
 }
 
-void print(const studentas& st, int stats) {
-    std::cout << std::left << std::setw(20) << st.vardas << "|";
-    std::cout << std::left << std::setw(20) << st.pavarde << "|";
+int ivesti_sk(const string& klausimas, int nuo, int iki) {
+    string eilute;
+    cout << klausimas;
+    while (std::getline(cin, eilute)) {
+        int sk;
+        if (!i_skaiciu(eilute, sk)) {
+            cout << "Įvesta netinkama reikšmė (ne skaičius arba per didelis skaičius), bandykite vėl.\n";
+        } else if (sk < nuo || sk > iki) {
+            if (iki == BE_RIBOS) {
+                cout << "Skaičius turi būti ne mažesnis nei " << nuo << ".\n";
+            } else {
+                cout << "Skaičius turi būti nuo " << nuo << " iki " << iki << ".\n";
+            }
+        } else {
+            return sk;
+        }
+        cout << klausimas;
+    }
+    return nuo;
+}
+
+int nuskaityti_pazymi(std::istream& stream, size_t eilutes_nr, const string& pavadinimas) {
+    string reiksme;
+    int pazymys = 0;
+    if (!(stream >> reiksme)) {
+        cout << "Eilutėje " << eilutes_nr << " (" << pavadinimas << "): trūksta reikšmės! Įrašomas 0.\n";
+    } else if (!i_skaiciu(reiksme, pazymys)) {
+        cout << "Eilutėje " << eilutes_nr << " (" << pavadinimas << "): „" << reiksme
+             << "“ nėra tinkamas skaičius! Įrašomas 0.\n";
+        pazymys = 0;
+    } else if (pazymys < MIN_PAZ || pazymys > MAX_PAZ) {
+        cout << "Eilutėje " << eilutes_nr << " (" << pavadinimas << "): " << pazymys << " nepatenka į intervalą ["
+             << MIN_PAZ << "; " << MAX_PAZ << "]! Įrašomas 0.\n";
+        pazymys = 0;
+    }
+    return pazymys;
+}
+
+void spausdinti(const studentas& st, Statistika statistika) {
+    cout << std::left << std::setw(PLOTIS) << st.vardas << "|";
+    cout << std::left << std::setw(PLOTIS) << st.pavarde << "|";
     double vid = 0.4 * vidurkis(st.paz) + 0.6 * st.exam;
     double med = 0.4 * mediana(st.paz) + 0.6 * st.exam;
-    if (stats == 0) {
-        std::cout << std::right << std::setw(20) << std::fixed << std::setprecision(2) << vid << "|" << std::endl;
-    } else if (stats == 1) {
-        std::cout << std::right << std::setw(20) << std::fixed << std::setprecision(2) << med << "|" << std::endl;
-    } else if (stats == 2) {
-        std::cout << std::right << std::setw(20) << std::fixed << std::setprecision(2) << vid << "|"
-                  << std::setw(20) << med << "|" << std::endl;
+    if (statistika == Statistika::Vidurkis) {
+        cout << std::right << std::setw(PLOTIS) << std::fixed << std::setprecision(2) << vid << "|\n";
+    } else if (statistika == Statistika::Mediana) {
+        cout << std::right << std::setw(PLOTIS) << std::fixed << std::setprecision(2) << med << "|\n";
+    } else if (statistika == Statistika::Abu) {
+        cout << std::right << std::setw(PLOTIS) << std::fixed << std::setprecision(2) << vid << "|" << std::setw(PLOTIS)
+             << med << "|\n";
     }
 }
 
 int main() {
+#ifdef _WIN32
+    SetConsoleOutputCP(CP_UTF8);
+    SetConsoleCP(CP_UTF8);
+#endif
     std::srand(static_cast<unsigned>(std::time(nullptr)));
 
     vector<studentas> grupe;
-    studentas st;
-    int studkiekis;
-    int stats = -1;
-    bool zinomassk = false;
-    bool ivesti = false;
-    bool nuskaityti = false;
-    bool generuoti = false;
-    bool teisinga = false;
-    std::string eilute;
+    bool zinomas_sk = false;
+    string eilute;
 
-    std::cout << "Ar namų darbų ir egzaminų rezultatus įvesti ranka, nuskaityti nuo failo ar generuoti atsitiktinai?" << std::endl;
-    std::cout << "Spauskite [0], kad įvesti ranka; [1], kad nuskaityti iš failo; [2], kad generuoti atsitiktinai. ";
-    while (std::getline(std::cin, eilute)) {
-        if (eilute == "0") {
-            ivesti = true;
-            break;
-        }
-        if (eilute == "1") {
-            nuskaityti = true;
-            break;
-        }
-        if (eilute == "2") {
-            generuoti = true;
-            break;
-        }
-        std::cout << "Įveskite 0, 1 arba 2." << std::endl;
-        std::cout << "Spauskite [0], kad įvesti ranka; [1], kad nuskaityti iš failo; [2], kad generuoti atsitiktinai. ";
-    }
+    cout << "Ar namų darbų ir egzaminų rezultatus įvesti ranka, nuskaityti nuo failo ar generuoti atsitiktinai?\n";
+    const auto rezimas = static_cast<Rezimas>(ivesti_sk(
+        "Spauskite [0], kad įvesti ranka; [1], kad nuskaityti iš failo; [2], kad generuoti atsitiktinai. ", 0, 2));
 
-    if (ivesti) {
-        std::cout << "Ar žinomas namų darbų skaičius? [y/n] ";
-        while (std::getline(std::cin, eilute)) {
+    if (rezimas == Rezimas::Ivesti) {
+        cout << "Ar žinomas namų darbų skaičius? [y/n] ";
+        while (std::getline(cin, eilute)) {
             if (eilute == "y") {
-                zinomassk = true;
+                zinomas_sk = true;
                 break;
             }
             if (eilute == "n") {
-                zinomassk = false;
+                zinomas_sk = false;
                 break;
             }
-            std::cout << "Įveskite \"n\" arba \"y\"" << std::endl;
-            std::cout << "Ar žinomas namų darbų skaičius? [y/n] ";
+            cout << "Įveskite \"n\" arba \"y\"\n";
+            cout << "Ar žinomas namų darbų skaičius? [y/n] ";
         }
     } else {
-        zinomassk = true;
+        zinomas_sk = true;
     }
 
-    if (!nuskaityti) {
-        std::cout << "Kiek yra studentų? ";
-        ivesti_sk(studkiekis);
+    if (rezimas != Rezimas::Nuskaityti) {
+        const int studkiekis = ivesti_sk("Kiek yra studentų? ", 0, BE_RIBOS);
         for (int i = 0; i < studkiekis; i++) {
-            std::cout << "Įveskite vardą: ";
-            std::cin >> st.vardas;
+            studentas st;
 
-            std::cout << "Įveskite pavardę: ";
-            std::cin >> st.pavarde;
-            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            cout << "Įveskite vardą: ";
+            cin >> st.vardas;
 
-            int kiekis;
-            if (zinomassk) {
-                std::cout << "Kiek studentas turi pažymių? ";
-                ivesti_sk(kiekis);
-                while (kiekis <= 0) {
-                    std::cout << "Kiekis turi būti teigiamas! " << std::endl;
-                    std::cout << "Kiek studentas turi pažymių? ";
-                    ivesti_sk(kiekis);
-                }
-                int sk;
-                if (!generuoti) {
-                    for (int j = 0; j < kiekis; j++) {
-                        std::cout << "Įveskite " << j + 1 << "-ąjį pažymį: ";
-                        ivesti_sk(sk);
-                        st.paz.push_back(sk);
+            cout << "Įveskite pavardę: ";
+            cin >> st.pavarde;
+            cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
+            if (zinomas_sk) {
+                const int kiekis = ivesti_sk("Kiek studentas turi pažymių? ", 1, BE_RIBOS);
+
+                if (rezimas == Rezimas::Ivesti) {
+                    for (int j = 1; j <= kiekis; j++) {
+                        st.paz.push_back(
+                            ivesti_sk("Įveskite " + std::to_string(j) + "-ąjį pažymį: ", MIN_PAZ, MAX_PAZ));
                     }
                 } else {
-                    std::cout << "Suvesti atsitiktiniai pažymiai: ";
+                    cout << "Suvesti atsitiktiniai pažymiai: ";
                     for (int j = 0; j < kiekis; j++) {
-                        sk = std::rand() % 11;
+                        const int sk = std::rand() % 11;
                         st.paz.push_back(sk);
-                        std::cout << sk << " ";
+                        cout << sk << " ";
                     }
-                    std::cout << std::endl;
+                    cout << '\n';
                 }
-            }
-
-            if (!zinomassk) {
-                int j = 1;
-                std::cout << "Įveskite 1-ąjį pažymį (Enter, kad užbaigti): ";
-
-                while (!teisinga) {
-                    try {
-                        while (std::getline(std::cin, eilute) && !eilute.empty()) {
-                            int paz = std::stoi(eilute);
-                            st.paz.push_back(paz);
-                            j++;
-                            std::cout << "Įveskite " << j << "-ąjį pažymį (Enter, kad užbaigti): ";
-                        }
-                        teisinga = true;
-                    } catch (const std::invalid_argument&) {
-                        std::cout << "Įvestas ne skaičius!" << std::endl;
-                        std::cout << "Įveskite " << j << "-ąjį pažymį (Enter, kad užbaigti): ";
-                    } catch (const std::out_of_range&) {
-                        std::cout << "Įvestas per didelis skaičius!" << std::endl;
-                        std::cout << "Įveskite " << j << "-ąjį pažymį (Enter, kad užbaigti): ";
-                    }
-                }
-                teisinga = false;
-            }
-
-            if (generuoti) {
-                st.exam = std::rand() % 11;
-                std::cout << "Atsitiktinis egzamino rezultatas: " << st.exam << std::endl;
             } else {
-                std::cout << "Įveskite egzamino rezultatą: ";
-                ivesti_sk(st.exam);
+                while (true) {
+                    cout << "Įveskite " << st.paz.size() + 1 << "-ąjį pažymį (Enter, kad užbaigti): ";
+                    if (!std::getline(cin, eilute) || eilute.empty()) break;
+
+                    int pazymys;
+                    if (!i_skaiciu(eilute, pazymys)) {
+                        cout << "Įvesta netinkama reikšmė (ne skaičius arba per didelis skaičius)!\n";
+                    } else if (pazymys < MIN_PAZ || pazymys > MAX_PAZ) {
+                        cout << "Pažymys turi būti nuo " << MIN_PAZ << " iki " << MAX_PAZ << "!\n";
+                    } else {
+                        st.paz.push_back(pazymys);
+                    }
+                }
+            }
+
+            if (rezimas == Rezimas::Generuoti) {
+                st.exam = std::rand() % 11;
+                cout << "Atsitiktinis egzamino rezultatas: " << st.exam << '\n';
+            } else {
+                st.exam = ivesti_sk("Įveskite egzamino rezultatą: ", MIN_PAZ, MAX_PAZ);
             }
             grupe.push_back(st);
-            st.pavarde.clear();
-            st.vardas.clear();
-            st.paz.clear();
-            st.exam = 0;
         }
     }
 
-    if (nuskaityti) {
-        string filename;
-        string rez;
-        string skip;
-        vector<string> turinys;
-        std::ifstream File;
-        int pazcount = 0;
+    if (rezimas == Rezimas::Nuskaityti) {
+        string failo_pavadinimas;
+        std::ifstream failas;
         while (true) {
-            std::cout << "Įveskite failo pavadinimą nuskaitymui. (pvz.: „studentai.txt“): ";
-            std::cin >> filename;
-            File.open(filename);
-            if (!File) {
-                std::cout << "Failas nerastas. " << std::endl;
-                File.clear();
-            } else {
-                break;
-            }
+            cout << "Įveskite failo pavadinimą nuskaitymui. (pvz.: „studentai.txt“): ";
+            if (!(cin >> failo_pavadinimas)) break;
+            failas.open(failo_pavadinimas);
+            if (failas) break;
+            cout << "Failas nerastas.\n";
+            failas.clear();
         }
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-        while (std::getline(File, rez)) {
-            turinys.push_back(rez);
-        }
-        File.close();
+        cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-        if (turinys.empty()) {
-            std::cout << "Failas tuščias!" << std::endl;
+        vector<string> turinys;
+        while (std::getline(failas, eilute)) {
+            turinys.push_back(eilute);
+        }
+
+        if (!failas.is_open()) {
+            cout << "Failas neatidarytas.\n";
+        } else if (turinys.empty()) {
+            cout << "Failas tuščias!\n";
         } else {
-            string header = turinys[0];
-            std::istringstream shead(header);
-            while (shead >> skip) {
-                pazcount++;
+            std::istringstream antraste(turinys[0]);
+            string zodis;
+            int paz_kiekis = 0;
+            while (antraste >> zodis) {
+                paz_kiekis++;
             }
-            pazcount = pazcount - 3;
-            if (pazcount < 0) pazcount = 0;
+            paz_kiekis = std::max(paz_kiekis - 3, 0);
+
             for (size_t i = 1; i < turinys.size(); i++) {
                 if (turinys[i].empty()) continue;
                 std::istringstream ss(turinys[i]);
+                studentas st;
                 ss >> st.vardas >> st.pavarde;
-                string a;
-                for (int j = 0; j < pazcount; j++) {
-                    try {
-                        ss >> a;
-                        st.paz.push_back(stoi(a));
-                    } catch (const std::invalid_argument&) {
-                        std::cout << "Eilutėje " << i + 1 << " tarp namų darbų pažymių įvestas ne skaičius! Įrašomas 0." << std::endl;
-                        st.paz.push_back(0);
-                    } catch (const std::out_of_range&) {
-                        std::cout << "Eilutėje " << i + 1 << " reikšmė per didelė! Įrašomas 0." << std::endl;
-                        st.paz.push_back(0);
-                    }
+                for (int j = 0; j < paz_kiekis; j++) {
+                    st.paz.push_back(nuskaityti_pazymi(ss, i + 1, "namų darbų pažymys"));
                 }
-                try {
-                    ss >> a;
-                    st.exam = std::stoi(a);
-                } catch (const std::invalid_argument&) {
-                    std::cout << "Eilutėje " << i + 1 << " egzamino rezultatas ne skaičius! Įvedamas 0." << std::endl;
-                    st.exam = 0;
-                } catch (const std::out_of_range&) {
-                    std::cout << "Eilutėje " << i + 1 << " egzamino rezultatas per didelis! Įvedamas 0." << std::endl;
-                    st.exam = 0;
-                }
-                ss.clear();
+                st.exam = nuskaityti_pazymi(ss, i + 1, "egzamino rezultatas");
                 grupe.push_back(st);
-                st.pavarde.clear();
-                st.vardas.clear();
-                st.paz.clear();
-                st.exam = 0;
             }
         }
+        failas.close();
     }
 
-    std::cout << "Kokių norite duomenų:" << std::endl
-              << "[0] - vidurkio" << std::endl
-              << "[1] - medianos" << std::endl
-              << "[2] - abiejų" << std::endl;
-    while (!teisinga) {
-        if (!std::getline(std::cin, eilute)) break;
-        try {
-            stats = std::stoi(eilute);
-            if (stats == 0 || stats == 1 || stats == 2) {
-                teisinga = true;
-            } else {
-                std::cout << "Įvesta netinkama reikšmė, bandykite vėl: ";
-            }
-        } catch (const std::invalid_argument&) {
-            std::cout << "Įvesta netinkama reikšmė, bandykite vėl: ";
-        } catch (const std::out_of_range&) {
-            std::cout << "Įvesta netinkama reikšmė, bandykite vėl: ";
-        }
-    }
-    if (!teisinga) stats = 0;
-    teisinga = false;
+    cout << "Kokių norite duomenų:\n"
+         << "[0] - vidurkio\n"
+         << "[1] - medianos\n"
+         << "[2] - abiejų\n";
+    const auto statistika = static_cast<Statistika>(ivesti_sk("Pasirinkite: ", 0, 2));
 
-    std::cout << std::left << std::setw(20) << "Vardas" << "|";
-    std::cout << std::left << std::setw(20) << "Pavarde" << "|";
-    if (stats == 0) {
-        std::cout << std::left << std::setw(20) << "Galutinis (vid.)" << "|" << std::endl;
-    } else if (stats == 1) {
-        std::cout << std::left << std::setw(20) << "Galutinis (med.)" << "|" << std::endl;
-    } else if (stats == 2) {
-        std::cout << std::left << std::setw(20) << "Galutinis (vid.)" << "|"
-                  << std::setw(20) << "Galutinis (med.)" << "|" << std::endl;
+    cout << std::left << std::setw(PLOTIS) << "Vardas" << "|";
+    cout << std::left << std::setw(PLOTIS) << "Pavarde" << "|";
+    if (statistika == Statistika::Vidurkis) {
+        cout << std::left << std::setw(PLOTIS) << "Galutinis (vid.)" << "|\n";
+    } else if (statistika == Statistika::Mediana) {
+        cout << std::left << std::setw(PLOTIS) << "Galutinis (med.)" << "|\n";
+    } else if (statistika == Statistika::Abu) {
+        cout << std::left << std::setw(PLOTIS) << "Galutinis (vid.)" << "|" << std::setw(PLOTIS) << "Galutinis (med.)"
+             << "|\n";
     }
 
     for (const studentas& stud : grupe) {
-        print(stud, stats);
+        spausdinti(stud, statistika);
     }
 }
