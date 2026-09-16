@@ -1,0 +1,5 @@
+Vardas                   Pavarde                    ND1       ND2       ND3       ND4       ND5       ND6       ND7       Egz.
+Darius                   Varnelis		      5         3         8         10        8         6         6         8
+Jonas                    Jonaitis                     5         2         9         10        6         7         7         9
+Marytė	                 Buraitytė                    6         7         1         9         7         6         6         10
+Kamilė                   Surkienė                     7         9         8         6         6         7         7         5
