@@ -281,6 +281,7 @@ int main() {
         cout << std::left << std::setw(PLOTIS) << "Galutinis (vid.)" << "|" << std::setw(PLOTIS) << "Galutinis (med.)"
              << "|\n";
     }
+
     if (statistika != Statistika::Abu) {
         std::cout << std::string(PLOTIS*3+3, '-') << "\n";
     } else {
