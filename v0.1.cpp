@@ -281,8 +281,11 @@ int main() {
         cout << std::left << std::setw(PLOTIS) << "Galutinis (vid.)" << "|" << std::setw(PLOTIS) << "Galutinis (med.)"
              << "|\n";
     }
-    std::cout << std::string(50, '-') << "\n";
-
+    if (statistika != Statistika::Abu) {
+        std::cout << std::string(PLOTIS*3+3, '-') << "\n";
+    } else {
+        std::cout << std::string(PLOTIS*4+4, '-') << "\n";
+    }
     std::sort(grupe.begin(), grupe.end(), [](const studentas& a, const studentas& b) {
         if (a.pavarde != b.pavarde) return a.pavarde < b.pavarde;
         return a.vardas < b.vardas;
