@@ -281,6 +281,7 @@ int main() {
         cout << std::left << std::setw(PLOTIS) << "Galutinis (vid.)" << "|" << std::setw(PLOTIS) << "Galutinis (med.)"
              << "|\n";
     }
+    std::cout << std::string(50, '-') << "\n";
 
     std::sort(grupe.begin(), grupe.end(), [](const studentas& a, const studentas& b) {
         if (a.pavarde != b.pavarde) return a.pavarde < b.pavarde;
