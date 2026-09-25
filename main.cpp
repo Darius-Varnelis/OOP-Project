@@ -113,20 +113,28 @@ void spausdinti(const studentas& st, Statistika statistika, std::ofstream& outpu
 void generuotiFaila(const int n) {
     const auto seed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
     std::mt19937 gen(static_cast<std::mt19937::result_type>(seed));
-    std::uniform_int_distribution<int> pazymiu_dist(MIN_PAZ*100, MAX_PAZ*100);
+    std::uniform_int_distribution<int> pazymiu_dist(MIN_PAZ, MAX_PAZ);
+    std::uniform_int_distribution<int> nd(1,20);
+    int nd_kiekis = nd(gen);
     cout << "Generuojamas failas kursiokai" + std::to_string(n) + ".txt\n";
     std::ofstream output;
     output.open("kursiokai" + std::to_string(n) + ".txt");
 
     output << std::left << std::setw(PLOTIS) << "Vardas" << "|";
     output << std::left << std::setw(utf8_plotis("Pavardė")) << "Pavardė" << "|";
-    output << std::left << std::setw(PLOTIS) << "Galutinis" << "|\n";
+    for (int i=0; i<nd_kiekis; i++) {
+        output << std::left << std::setw(PLOTIS) << "ND" + std::to_string(i+1) << "|";
+    }
+    output << std::left << std::setw(PLOTIS) << "Egzaminas" << "|\n";
 
     for (int i = 0; i < n; i++) {
-        output << std::left <<std::setw(PLOTIS) << "Vardenis" + std::to_string(i) <<"|";
-        output << std::left << std::setw(PLOTIS) << "Pavardenis" + std::to_string(i)<< "|";
-        output << std::right << std::setw(PLOTIS) << pazymiu_dist(gen)/100.0 <<"|\n" ;
-    }
+        output << std::left <<std::setw(PLOTIS) << "Vardenis" + std::to_string(i+1) <<"|";
+        output << std::left << std::setw(PLOTIS) << "Pavardenis" + std::to_string(i+1)<< "|";
+        for (int j=0; j<nd_kiekis; j++) {
+            output << std::right << std::setw(PLOTIS) << pazymiu_dist(gen) <<"|" ;
+            }
+        output << std::right << std::setw(PLOTIS) <<pazymiu_dist(gen) <<"|\n" ;
+        }
 
 
 }
