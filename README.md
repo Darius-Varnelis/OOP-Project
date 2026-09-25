@@ -1,12 +1,20 @@
 # OOP-Project
 ## Introduction
-This program was written as a project for an Object Oriented Programming Course. The purpose of this program is to take grades of students inputted in various ways and output a summary of their results.
+This program was written as a project for an Object Oriented Programming Course. The purpose of the program in this branch is to take generate files with a large amount of random student grade data, which must then be separated into two groups based on the students' final grade. Additionally, both the generation and sorting step are timed to aid in improving performance.
 ## Usage
-This program is used through the console. You must selected whether you will input all student data yourself, have it read from a file or generated randomly. If you choose to generate grades randomly, you will still have to input student name and surname yourself.
-Finally, you can select whether you want to see each student's final grade calculated using a median or average of their homework. Final grade is calculated using the formula: 
+This program does all steps automatically upon running main.cpp. Student data is generated and put into 5 separate files with 1k, 10k, 100k, 1 million and 10 million entries. For each of these data tables, two new files are generated, where the students are sorted into two groups based on their final grade:
 ```math
-Final grade = 0.4 \cdot average \space or \space median + 0.6 \cdot exam
+Final grade = 0.4 \cdot average  + 0.6 \cdot exam
 ```
-Output is sorted by surname and then by name.
+Students are put in a failing group if their grade is lower than 5.
 ## Structure
-All of the features are located within the file v0.1.cpp. Kursiokai.txt is an example file for student grades.
+### Studentas.cpp and Studentas.h
+These files contain features directly related to the student entity in the program, such as name and last name, grade average and final grade functions.
+### Utils.cpp and Utils.h
+These files contain helper functions that aid in better aligning tables that use Lithuanian characters.
+### Failai.cpp and Failai.H
+These files contain functions related to reading and inputing data into files.
+### main.cpp
+This file includes calls the above mentioned features to achieve the desired result of the program.
+## Disclaimer
+The generation of the text files is likely to take a long amount of time (about 5 minutes) as well as a large amount of storage (about 1gb).
