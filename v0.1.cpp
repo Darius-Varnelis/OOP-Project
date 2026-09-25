@@ -1,11 +1,11 @@
 #include <algorithm>
-#include <cstdlib>
-#include <ctime>
+#include <chrono>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
 #include <limits>
 #include <numeric>
+#include <random>
 #include <sstream>
 #include <stdexcept>
 #include <string>
@@ -114,17 +114,17 @@ int utf8_plotis(const string& tekstas) {
     return static_cast<int>(PLOTIS + tekstas.size() - utf8_ilgis(tekstas));
 }
 
-void spausdinti(const studentas& st, Statistika statistika) {
-    cout << std::left << std::setw(utf8_plotis(st.vardas)) << st.vardas << "|";
-    cout << std::left << std::setw(utf8_plotis(st.pavarde)) << st.pavarde << "|";
+void spausdinti(const studentas& st, Statistika statistika, std::ofstream& output) {
+    output << std::left << std::setw(utf8_plotis(st.vardas)) << st.vardas << "|";
+    output << std::left << std::setw(utf8_plotis(st.pavarde)) << st.pavarde << "|";
     double vid = 0.4 * vidurkis(st.paz) + 0.6 * st.exam;
     double med = 0.4 * mediana(st.paz) + 0.6 * st.exam;
     if (statistika == Statistika::Vidurkis) {
-        cout << std::right << std::setw(PLOTIS) << std::fixed << std::setprecision(2) << vid << "|\n";
+        output << std::right << std::setw(PLOTIS) << std::fixed << std::setprecision(2) << vid << "|\n";
     } else if (statistika == Statistika::Mediana) {
-        cout << std::right << std::setw(PLOTIS) << std::fixed << std::setprecision(2) << med << "|\n";
+        output << std::right << std::setw(PLOTIS) << std::fixed << std::setprecision(2) << med << "|\n";
     } else if (statistika == Statistika::Abu) {
-        cout << std::right << std::setw(PLOTIS) << std::fixed << std::setprecision(2) << vid << "|" << std::setw(PLOTIS)
+        output << std::right << std::setw(PLOTIS) << std::fixed << std::setprecision(2) << vid << "|" << std::setw(PLOTIS)
              << med << "|\n";
     }
 }
@@ -134,7 +134,9 @@ int main() {
     SetConsoleOutputCP(CP_UTF8);
     SetConsoleCP(CP_UTF8);
 #endif
-    std::srand(static_cast<unsigned>(std::time(nullptr)));
+    const auto seed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
+    std::mt19937 gen(static_cast<std::mt19937::result_type>(seed));
+    std::uniform_int_distribution<int> pazymiu_dist(MIN_PAZ, MAX_PAZ);
 
     vector<studentas> grupe;
     bool zinomas_sk = false;
@@ -187,7 +189,7 @@ int main() {
                 } else {
                     cout << "Suvesti atsitiktiniai pažymiai: ";
                     for (int j = 0; j < kiekis; j++) {
-                        const int sk = std::rand() % 11;
+                        const int sk = pazymiu_dist(gen);
                         st.paz.push_back(sk);
                         cout << sk << " ";
                     }
@@ -210,7 +212,7 @@ int main() {
             }
 
             if (rezimas == Rezimas::Generuoti) {
-                st.exam = std::rand() % 11;
+                st.exam = pazymiu_dist(gen);
                 cout << "Atsitiktinis egzamino rezultatas: " << st.exam << '\n';
             } else {
                 st.exam = ivesti_sk("Įveskite egzamino rezultatą: ", MIN_PAZ, MAX_PAZ);
@@ -271,28 +273,45 @@ int main() {
          << "[2] - abiejų\n";
     const auto statistika = static_cast<Statistika>(ivesti_sk("Pasirinkite: ", 0, 2));
 
-    cout << std::left << std::setw(PLOTIS) << "Vardas" << "|";
-    cout << std::left << std::setw(utf8_plotis("Pavardė")) << "Pavardė" << "|";
+    string outputfile = "output.txt";
+    std::ofstream output;
+    output.open(outputfile);
+
+    output << std::left << std::setw(PLOTIS) << "Vardas" << "|";
+    output << std::left << std::setw(utf8_plotis("Pavardė")) << "Pavardė" << "|";
     if (statistika == Statistika::Vidurkis) {
-        cout << std::left << std::setw(PLOTIS) << "Galutinis (vid.)" << "|\n";
+        output << std::left << std::setw(PLOTIS) << "Galutinis (vid.)" << "|\n";
     } else if (statistika == Statistika::Mediana) {
-        cout << std::left << std::setw(PLOTIS) << "Galutinis (med.)" << "|\n";
+        output << std::left << std::setw(PLOTIS) << "Galutinis (med.)" << "|\n";
     } else if (statistika == Statistika::Abu) {
-        cout << std::left << std::setw(PLOTIS) << "Galutinis (vid.)" << "|" << std::setw(PLOTIS) << "Galutinis (med.)"
+        output << std::left << std::setw(PLOTIS) << "Galutinis (vid.)" << "|" << std::setw(PLOTIS) << "Galutinis (med.)"
              << "|\n";
     }
 
     if (statistika != Statistika::Abu) {
-        std::cout << std::string(PLOTIS*3+3, '-') << "\n";
+        output << std::string(PLOTIS*3+3, '-') << "\n";
     } else {
-        std::cout << std::string(PLOTIS*4+4, '-') << "\n";
+        output << std::string(PLOTIS*4+4, '-') << "\n";
     }
-    std::sort(grupe.begin(), grupe.end(), [](const studentas& a, const studentas& b) {
-        if (a.pavarde != b.pavarde) return a.pavarde < b.pavarde;
-        return a.vardas < b.vardas;
-    });
+    cout << "Ar norite rūšiuoti rezultatus pagal pavardę? [y/n] ";
+    while (std::getline(cin, eilute)) {
+        if (eilute == "y") {
+            std::sort(grupe.begin(), grupe.end(), [](const studentas& a, const studentas& b) {
+                if (a.pavarde != b.pavarde) return a.pavarde < b.pavarde;
+                return a.vardas < b.vardas;
+            });
+            break;
+        }
+        if (eilute == "n") {
+            break;
+        }
+        cout << "Įveskite \"n\" arba \"y\"\n";
+        cout << "Ar norite rūšiuoti rezultatus pagal pavardę? [y/n] ";
+    }
+        for (const studentas& stud : grupe) {
+            spausdinti(stud, statistika, output);
+        }
+        output.close();
+        cout << "Išvesta į " << outputfile << "\n";
+    }
 
-    for (const studentas& stud : grupe) {
-        spausdinti(stud, statistika);
-    }
-}
