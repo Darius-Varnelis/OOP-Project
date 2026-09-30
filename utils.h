@@ -18,5 +18,7 @@ int utf8_plotis(const std::string& tekstas);
 // Skaičiaus įvedimas per konsolę
 int ivesti_sk(const std::string& klausimas, int nuo, int iki);
 
+bool taiparne(const std::string& klausimas);
+
 
 #endif  // OOP_PROJECT_UTILS_H

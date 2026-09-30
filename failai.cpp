@@ -102,3 +102,12 @@ void isvestiStudentus(const vector<studentas>& grupe, const int n) {
         rasytiStudenta(st.galutinis < ISLAIKYMO_RIBA ? nuskriaustukai : kietukai, st);
     }
 }
+bool ar_failai_egzistuoja(const int& min, const int& max) {
+    for (int i = min; i <= max; i *= 10) {
+        std::ifstream file(failoPavadinimas("kursiokai", i));
+        if (!file.is_open()) {
+            return false;
+        }
+    }
+    return true;
+}

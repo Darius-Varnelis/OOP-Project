@@ -31,13 +31,16 @@ int main() {
      << "[2] - Galutinį balą\n";
     auto rusiuoti = static_cast<Rusiuoti>(ivesti_sk("Pasirinkite programos režimą: ", 0, 2));
 
-    Timer visasGeneravimas;
-    for (int i = minfailas; i <= maxfailas; i *= 10) {
-        Timer t;
-        generuotiFaila(i);
-        std::cout << "  Generavimas užtruko: " << t.elapsed() << " s\n";
+
+    if ( !ar_failai_egzistuoja(minfailas,maxfailas) or taiparne("Ar generuoti naujus failus? [y/n]")) {
+        Timer visasGeneravimas;
+        for (int i = minfailas; i <= maxfailas; i *= 10) {
+            Timer t;
+            generuotiFaila(i);
+            std::cout << "  Generavimas užtruko: " << t.elapsed() << " s\n";
+        }
+        std::cout << "Visų failų generavimas užtruko: " << visasGeneravimas.elapsed() << " s\n\n";
     }
-    std::cout << "Visų failų generavimas užtruko: " << visasGeneravimas.elapsed() << " s\n\n";
 
     for (int i = minfailas; i <= maxfailas; i *= 10) {
         const std::string pavadinimas = failoPavadinimas("kursiokai", i);

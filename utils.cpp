@@ -2,6 +2,7 @@
 #include <stdexcept>
 #include <string>
 #include<iostream>
+
 using std::string;
 
 namespace {
@@ -52,3 +53,22 @@ int ivesti_sk(const string& klausimas, int nuo, int iki) {
     std::cout << "Įvedamas skaičius " << nuo << std::endl;
     return nuo;
 }
+
+bool taiparne(const string& klausimas) {
+    string eilute;
+    std::cout << klausimas;
+    while (std::getline(std::cin, eilute)) {
+        if (eilute == "y") {
+            return true;
+        }
+        if (eilute == "n") {
+            return false;
+        }
+        std::cout << "Įveskite \"n\" arba \"y\"\n";
+        std::cout << klausimas;
+    }
+    std::cout << "Nepavyko nuskaityti atsakymo, priskiaramas [n] atsakynas" << std::endl;
+    return false;
+}
+
+
