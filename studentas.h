@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 
+enum class Rusiuoti{Varda,Pavarde,Pazymi};
 constexpr double ISLAIKYMO_RIBA = 5.0;
 
 struct studentas {
@@ -15,5 +16,6 @@ struct studentas {
 
 double vidurkis(const std::vector<int>& paz);
 void skaiciuotiGalutini(studentas& st);
+void rusiuotiStudentus(std::vector<studentas>& grupe, Rusiuoti& r);
 
 #endif  // OOP_PROJECT_STUDENTAS_H

@@ -15,4 +15,8 @@ size_t utf8_ilgis(const std::string& tekstas);
 // setw plotis, kompensuojantis daugiabaičius UTF-8 simbolius
 int utf8_plotis(const std::string& tekstas);
 
+// Skaičiaus įvedimas per konsolę
+int ivesti_sk(const std::string& klausimas, int nuo, int iki);
+
+
 #endif  // OOP_PROJECT_UTILS_H
