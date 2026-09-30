@@ -3,6 +3,7 @@
 
 #include <limits>
 #include <string>
+#include <vector>
 
 constexpr int MIN_PAZ = 0;
 constexpr int MAX_PAZ = 10;
@@ -18,7 +19,10 @@ int utf8_plotis(const std::string& tekstas);
 // Skaičiaus įvedimas per konsolę
 int ivesti_sk(const std::string& klausimas, int nuo, int iki);
 
+// Funkcija, gražinanti loginę reikšmę taip ar ne klausimui
 bool taiparne(const std::string& klausimas);
+
+
 
 
 #endif  // OOP_PROJECT_UTILS_H

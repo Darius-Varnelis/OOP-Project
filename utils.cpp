@@ -2,7 +2,8 @@
 #include <stdexcept>
 #include <string>
 #include<iostream>
-
+#include <numeric>
+#include <vector>
 using std::string;
 
 namespace {
@@ -70,5 +71,6 @@ bool taiparne(const string& klausimas) {
     std::cout << "Nepavyko nuskaityti atsakymo, priskiaramas [n] atsakynas" << std::endl;
     return false;
 }
+
 
 
