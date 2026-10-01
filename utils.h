@@ -2,6 +2,7 @@
 #define OOP_PROJECT_UTILS_H
 
 #include <limits>
+#include <numeric>
 #include <string>
 #include <vector>
 
@@ -22,7 +23,11 @@ int ivesti_sk(const std::string& klausimas, int nuo, int iki);
 // Funkcija, gražinanti loginę reikšmę taip ar ne klausimui
 bool taiparne(const std::string& klausimas);
 
-
+template <typename T>
+double vidurkis(const std::vector<T>& v) {
+    if (v.empty()) return 0.0;
+    return std::accumulate(v.begin(), v.end(), 0.0) / v.size();
+}
 
 
 #endif  // OOP_PROJECT_UTILS_H
