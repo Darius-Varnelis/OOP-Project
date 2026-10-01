@@ -12,16 +12,16 @@ constexpr int BE_RIBOS = std::numeric_limits<int>::max();
 constexpr int PLOTIS = 20;
 
 // Simbolių (ne baitų) skaičius UTF-8 eilutėje
-size_t utf8_ilgis(const std::string& tekstas);
+size_t utf8Ilgis(const std::string& tekstas);
 
 // setw plotis, kompensuojantis daugiabaičius UTF-8 simbolius
-int utf8_plotis(const std::string& tekstas);
+int utf8Plotis(const std::string& tekstas);
 
 // Skaičiaus įvedimas per konsolę
-int ivesti_sk(const std::string& klausimas, int nuo, int iki);
+int ivestiSk(const std::string& klausimas, int nuo, int iki);
 
 // Funkcija, gražinanti loginę reikšmę taip ar ne klausimui
-bool taiparne(const std::string& klausimas);
+bool taipArNe(const std::string& klausimas);
 
 template <typename T>
 double vidurkis(const std::vector<T>& v) {

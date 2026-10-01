@@ -9,8 +9,8 @@
 std::string failoPavadinimas(const std::string& pradzia, int n);
 
 void generuotiFaila(int n);
-void nuskaitytiStudentus(std::vector<studentas>& grupe, const std::string& filename);
-void isvestiStudentus(const std::vector<studentas>& grupe, int n);
-bool ar_failai_egzistuoja(const int& min, const int& max);
+void nuskaitytiStudentus(std::vector<Studentas>& grupe, const std::string& filename);
+void isvestiStudentus(const std::vector<Studentas>& grupe, const std::string& filename);
+bool arFailaiEgzistuoja(int min, int max);
 
 #endif  // OOP_PROJECT_FAILAI_H

@@ -18,13 +18,13 @@ namespace {
 
 void rasytiAntraste(std::ostream& out) {
     out << std::left << std::setw(PLOTIS) << "Vardas" << "|";
-    out << std::setw(utf8_plotis("Pavardė")) << "Pavardė" << "|";
+    out << std::setw(utf8Plotis("Pavardė")) << "Pavardė" << "|";
     out << std::setw(PLOTIS) << "Galutinis" << "|\n";
 }
 
-void rasytiStudenta(std::ostream& out, const studentas& st) {
-    out << std::left << std::setw(utf8_plotis(st.vardas)) << st.vardas << "|";
-    out << std::setw(utf8_plotis(st.pavarde)) << st.pavarde << "|";
+void rasytiStudenta(std::ostream& out, const Studentas& st) {
+    out << std::left << std::setw(utf8Plotis(st.vardas)) << st.vardas << "|";
+    out << std::setw(utf8Plotis(st.pavarde)) << st.pavarde << "|";
     out << std::right << std::setw(PLOTIS) << st.galutinis << "|\n";
 }
 
@@ -37,17 +37,17 @@ string failoPavadinimas(const string& pradzia, int n) {
 void generuotiFaila(const int n) {
     const auto seed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
     std::mt19937 gen(static_cast<std::mt19937::result_type>(seed));
-    std::uniform_int_distribution<int> pazymiu_dist(MIN_PAZ, MAX_PAZ);
-    std::uniform_int_distribution<int> nd_dist(1, 20);
-    const int nd_kiekis = nd_dist(gen);
+    std::uniform_int_distribution<int> pazymiuDist(MIN_PAZ, MAX_PAZ);
+    std::uniform_int_distribution<int> ndDist(1, 20);
+    const int ndKiekis = ndDist(gen);
 
     const string pavadinimas = failoPavadinimas("kursiokai", n);
     std::cout << "Generuojamas failas " << pavadinimas << "\n";
     std::ofstream output(pavadinimas);
 
     output << std::left << std::setw(PLOTIS) << "Vardas";
-    output << std::setw(utf8_plotis("Pavardė")) << "Pavardė";
-    for (int i = 0; i < nd_kiekis; i++) {
+    output << std::setw(utf8Plotis("Pavardė")) << "Pavardė";
+    for (int i = 0; i < ndKiekis; i++) {
         output << std::setw(PLOTIS) << "ND" + std::to_string(i + 1);
     }
     output << std::setw(PLOTIS) << "Egzaminas" << "\n";
@@ -56,14 +56,14 @@ void generuotiFaila(const int n) {
         output << std::left << std::setw(PLOTIS) << "Vardenis" + std::to_string(i + 1);
         output << std::setw(PLOTIS) << "Pavardenis" + std::to_string(i + 1);
         output << std::right;
-        for (int j = 0; j < nd_kiekis; j++) {
-            output << std::setw(PLOTIS) << pazymiu_dist(gen);
+        for (int j = 0; j < ndKiekis; j++) {
+            output << std::setw(PLOTIS) << pazymiuDist(gen);
         }
-        output << std::setw(PLOTIS) << pazymiu_dist(gen) << "\n";
+        output << std::setw(PLOTIS) << pazymiuDist(gen) << "\n";
     }
 }
 
-void nuskaitytiStudentus(vector<studentas>& grupe, const string& filename) {
+void nuskaitytiStudentus(vector<Studentas>& grupe, const string& filename) {
     std::ifstream ins(filename);
     if (!ins) throw std::runtime_error("Nepavyko atidaryti failo " + filename);
 
@@ -73,14 +73,14 @@ void nuskaitytiStudentus(vector<studentas>& grupe, const string& filename) {
     string zodis;
     int stulpeliu = 0;
     while (antraste >> zodis) stulpeliu++;
-    const int paz_kiekis = std::max(stulpeliu - 3, 0);  // minus Vardas, Pavardė, Egzaminas
+    const int pazKiekis = std::max(stulpeliu - 3, 0);  // minus Vardas, Pavardė, Egzaminas
 
     while (std::getline(ins, eilute)) {
-        studentas st;
+        Studentas st;
         std::istringstream duomenys(eilute);
         duomenys >> st.vardas >> st.pavarde;
-        st.paz.reserve(paz_kiekis);
-        for (int i = 0; i < paz_kiekis; i++) {
+        st.paz.reserve(pazKiekis);
+        for (int i = 0; i < pazKiekis; i++) {
             int num;
             duomenys >> num;
             st.paz.push_back(num);
@@ -90,19 +90,16 @@ void nuskaitytiStudentus(vector<studentas>& grupe, const string& filename) {
     }
 }
 
-void isvestiStudentus(const vector<studentas>& grupe, const int n) {
-    std::ofstream nuskriaustukai(failoPavadinimas("nuskriaustukai", n));
-    std::ofstream kietukai(failoPavadinimas("kietukai", n));
-    nuskriaustukai << std::fixed << std::setprecision(2);
-    kietukai << std::fixed << std::setprecision(2);
+void isvestiStudentus(const vector<Studentas>& grupe, const string& filename) {
+    std::ofstream out(filename);
+    out << std::fixed << std::setprecision(2);
 
-    rasytiAntraste(nuskriaustukai);
-    rasytiAntraste(kietukai);
-    for (const studentas& st : grupe) {
-        rasytiStudenta(st.galutinis < ISLAIKYMO_RIBA ? nuskriaustukai : kietukai, st);
+    rasytiAntraste(out);
+    for (const Studentas& st : grupe) {
+        rasytiStudenta(out, st);
     }
 }
-bool ar_failai_egzistuoja(const int& min, const int& max) {
+bool arFailaiEgzistuoja(int min, int max) {
     for (int i = min; i <= max; i *= 10) {
         std::ifstream file(failoPavadinimas("kursiokai", i));
         if (!file.is_open()) {

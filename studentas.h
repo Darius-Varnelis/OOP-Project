@@ -8,7 +8,7 @@
 enum class Rusiuoti{Varda,Pavarde,Pazymi};
 constexpr double ISLAIKYMO_RIBA = 5.0;
 
-struct studentas {
+struct Studentas {
     std::string vardas, pavarde;
     std::vector<int> paz;
     int exam = 0;
@@ -16,7 +16,7 @@ struct studentas {
 };
 
 
-void skaiciuotiGalutini(studentas& st);
-void rusiuotiStudentus(std::vector<studentas>& grupe, Rusiuoti r);
+void skaiciuotiGalutini(Studentas& st);
+void rusiuotiStudentus(std::vector<Studentas>& grupe, Rusiuoti r);
 
 #endif  // OOP_PROJECT_STUDENTAS_H

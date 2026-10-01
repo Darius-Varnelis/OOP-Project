@@ -67,3 +67,8 @@ vcpkg_installed/
 # test output & cache
 Testing/
 .cache/
+
+# Sugeneruoti duomenų failai
+kursiokai[0-9]*.txt
+kietukai*.txt
+nuskriaustukai*.txt

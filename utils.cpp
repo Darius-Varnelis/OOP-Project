@@ -7,7 +7,7 @@
 using std::string;
 
 namespace {
-    bool i_skaiciu(const string& tekstas, int& rezultatas) {
+    bool iSkaiciu(const string& tekstas, int& rezultatas) {
         try {
             size_t pabaiga;
             int sk = std::stoi(tekstas, &pabaiga);
@@ -21,7 +21,7 @@ namespace {
         }
     }
 }
-size_t utf8_ilgis(const std::string& tekstas) {
+size_t utf8Ilgis(const std::string& tekstas) {
     size_t ilgis = 0;
     for (unsigned char c : tekstas) {
         if ((c & 0xC0) != 0x80) ilgis++;
@@ -29,16 +29,16 @@ size_t utf8_ilgis(const std::string& tekstas) {
     return ilgis;
 }
 
-int utf8_plotis(const std::string& tekstas) {
-    return static_cast<int>(PLOTIS + tekstas.size() - utf8_ilgis(tekstas));
+int utf8Plotis(const std::string& tekstas) {
+    return static_cast<int>(PLOTIS + tekstas.size() - utf8Ilgis(tekstas));
 }
 
-int ivesti_sk(const string& klausimas, int nuo, int iki) {
+int ivestiSk(const string& klausimas, int nuo, int iki) {
     string eilute;
     std::cout << klausimas;
     while (std::getline(std::cin, eilute)) {
         int sk;
-        if (!i_skaiciu(eilute, sk)) {
+        if (!iSkaiciu(eilute, sk)) {
             std::cout << "Įvesta netinkama reikšmė (ne skaičius arba per didelis skaičius), bandykite vėl.\n";
         } else if (sk < nuo || sk > iki) {
             if (iki == BE_RIBOS) {
@@ -55,7 +55,7 @@ int ivesti_sk(const string& klausimas, int nuo, int iki) {
     return nuo;
 }
 
-bool taiparne(const string& klausimas) {
+bool taipArNe(const string& klausimas) {
     string eilute;
     std::cout << klausimas;
     while (std::getline(std::cin, eilute)) {
