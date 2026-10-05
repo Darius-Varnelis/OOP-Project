@@ -43,24 +43,27 @@ void generuotiFaila(const int n) {
 
     const string pavadinimas = failoPavadinimas("kursiokai", n);
     std::cout << "Generuojamas failas " << pavadinimas << "\n";
-    std::ofstream output(pavadinimas);
+    std::ostringstream ss;
 
-    output << std::left << std::setw(PLOTIS) << "Vardas";
-    output << std::setw(utf8Plotis("Pavardė")) << "Pavardė";
+    ss << std::left << std::setw(PLOTIS) << "Vardas";
+    ss << std::setw(utf8Plotis("Pavardė")) << "Pavardė";
     for (int i = 0; i < ndKiekis; i++) {
-        output << std::setw(PLOTIS) << "ND" + std::to_string(i + 1);
+        ss << std::setw(PLOTIS) << "ND" + std::to_string(i + 1);
     }
-    output << std::setw(PLOTIS) << "Egzaminas" << "\n";
+    ss << std::setw(PLOTIS) << "Egzaminas" << "\n";
 
     for (int i = 0; i < n; i++) {
-        output << std::left << std::setw(PLOTIS) << "Vardenis" + std::to_string(i + 1);
-        output << std::setw(PLOTIS) << "Pavardenis" + std::to_string(i + 1);
-        output << std::right;
+        ss << std::left << std::setw(PLOTIS) << "Vardenis" + std::to_string(i + 1);
+        ss << std::setw(PLOTIS) << "Pavardenis" + std::to_string(i + 1);
+        ss << std::right;
         for (int j = 0; j < ndKiekis; j++) {
-            output << std::setw(PLOTIS) << pazymiuDist(gen);
+            ss << std::setw(PLOTIS) << pazymiuDist(gen);
         }
-        output << std::setw(PLOTIS) << pazymiuDist(gen) << "\n";
+        ss << std::setw(PLOTIS) << pazymiuDist(gen) << "\n";
     }
+    std::ofstream output(pavadinimas);
+
+    output << ss.str();
 }
 
 void nuskaitytiStudentus(vector<Studentas>& grupe, const string& filename) {
