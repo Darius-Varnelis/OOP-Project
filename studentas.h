@@ -18,5 +18,6 @@ struct Studentas {
 
 void skaiciuotiGalutini(Studentas& st);
 void rusiuotiStudentus(std::vector<Studentas>& grupe, Rusiuoti r);
+void skirstytiStudentus(std::vector<Studentas>& grupe, std::vector<Studentas>& nuskriaustukai, std::vector<Studentas>& kietukai);
 
 #endif  // OOP_PROJECT_STUDENTAS_H

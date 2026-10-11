@@ -72,11 +72,9 @@ int main() {
             rezultatai.rusiavimai.push_back(t.elapsed());
             std::cout << "  Rūšiavimas: " << rezultatai.rusiavimai[j] << " s\n";
 
-                t.reset();
+              t.reset();
             std::vector<Studentas> nuskriaustukai, kietukai;
-            for (Studentas& st : grupe) {
-                (st.galutinis < ISLAIKYMO_RIBA ? nuskriaustukai : kietukai).push_back(std::move(st));
-            }
+            skirstytiStudentus(grupe, nuskriaustukai, kietukai);
             grupe.clear();
             rezultatai.dalijimai.push_back(t.elapsed());
             std::cout << "  Dalijimas į dvi grupes: " << rezultatai.dalijimai[j] << " s\n";

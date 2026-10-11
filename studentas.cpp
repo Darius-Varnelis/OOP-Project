@@ -29,3 +29,8 @@ void rusiuotiStudentus(std::vector<Studentas>& grupe, Rusiuoti r) {
             });
     }
 }
+void skirstytiStudentus(std::vector<Studentas>& grupe, std::vector<Studentas>& nuskriaustukai, std::vector<Studentas>& kietukai) {
+    for (Studentas& st : grupe) {
+        (st.galutinis < ISLAIKYMO_RIBA ? nuskriaustukai : kietukai).push_back(std::move(st));
+    }
+}
