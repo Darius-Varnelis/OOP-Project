@@ -27,6 +27,11 @@ int main() {
 
     std::cout << std::fixed << std::setprecision(3);
 
+    std::cout << "Į kokią C++ struktūrą vesti studentus??\n"
+    << "[0] - Vector\n"
+    << "[1] - List\n";
+    auto struktura = static_cast<Struktura>(ivestiSk("Pasirinkite programos režimą: ", 0, 1));
+
     std::cout << "Pagal ką rūšiuoti išvesties failus?\n"
      << "[0] - Vardą\n"
      << "[1] - Pavardę\n"

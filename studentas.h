@@ -6,6 +6,7 @@
 #include <vector>
 
 enum class Rusiuoti{Varda,Pavarde,Pazymi};
+enum class Struktura{Vector,List};
 constexpr double ISLAIKYMO_RIBA = 5.0;
 
 struct Studentas {
