@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <list>
 #ifdef _WIN32
 #ifndef NOMINMAX
 #define NOMINMAX
@@ -14,8 +15,8 @@
 #include "timer.h"
 #include "utils.h"
 #include "results.h"
-
-
+template <typename Konteineris>
+void testas (int i, int j, const std::string& pavadinimas, Rezultatai& rezultatai, Rusiuoti rusiuoti, Struktura struktura);
 int main() {
 #ifdef _WIN32
     SetConsoleOutputCP(CP_UTF8);
@@ -56,48 +57,56 @@ int main() {
         std::cout << "Apdorojamas failas " << pavadinimas << "\n";
         for (int j = 0; j < KARTAI; j++){
             std::cout << j+1 << "-oji iteracija\n";
-
-            Timer apdorojimas;
-            Timer t;
-
-            std::vector<Studentas> grupe;
-            nuskaitytiStudentus(grupe, pavadinimas);
-            rezultatai.nuskaitymai.push_back(t.elapsed());
-            std::cout << "  Nuskaitymas: " << rezultatai.nuskaitymai[j] << " s\n";
-
-            t.reset();
-            for (Studentas& st : grupe) {
-                skaiciuotiGalutini(st);
+            if (struktura == Struktura::Vector){
+                testas<std::vector<Studentas>>(i, j, pavadinimas, rezultatai, rusiuoti, struktura);
             }
-            rezultatai.galutiniai.push_back(t.elapsed());
-            std::cout << "  Galutinių skaičiavimas: " << rezultatai.galutiniai[j] << " s\n";
-
-            t.reset();
-            rusiuotiStudentus(grupe, rusiuoti);
-            rezultatai.rusiavimai.push_back(t.elapsed());
-            std::cout << "  Rūšiavimas: " << rezultatai.rusiavimai[j] << " s\n";
-
-              t.reset();
-            std::vector<Studentas> nuskriaustukai, kietukai;
-            skirstytiStudentus(grupe, nuskriaustukai, kietukai);
-            grupe.clear();
-            rezultatai.dalijimai.push_back(t.elapsed());
-            std::cout << "  Dalijimas į dvi grupes: " << rezultatai.dalijimai[j] << " s\n";
-
-            t.reset();
-            isvestiStudentus(nuskriaustukai, failoPavadinimas("nuskriaustukai", i));
-            rezultatai.isvedimaiNuskriaustuku.push_back(t.elapsed());
-            std::cout << "  Nuskriaustukų išvedimas: " << rezultatai.isvedimaiNuskriaustuku[j] << " s\n";
-
-            t.reset();
-            isvestiStudentus(kietukai, failoPavadinimas("kietukai", i));
-            rezultatai.isvedimaiKietuku.push_back(t.elapsed());
-            std::cout << "  Kietukų išvedimas: " << rezultatai.isvedimaiKietuku[j] << " s\n";
-            rezultatai.bendri.push_back(apdorojimas.elapsed());
-            std::cout << "  Viso apdorojimas: " << rezultatai.bendri[j] << " s\n\n";
-        }
+            else {
+                testas<std::list<Studentas>>(i,j,pavadinimas,rezultatai,rusiuoti, struktura);
+            }
+    }
         visi.push_back(rezultatai);
     }
     std::string lentele = "lentele.txt";
     spausdintiLentele(lentele,visi);
+}
+template <typename Konteineris>
+void testas (const int i, const int j, const std::string& pavadinimas, Rezultatai& rezultatai, Rusiuoti rusiuoti, Struktura struktura){
+    Konteineris grupe;
+    Timer apdorojimas;
+    Timer t;
+    nuskaitytiStudentus(grupe, pavadinimas);
+    rezultatai.nuskaitymai.push_back(t.elapsed());
+    std::cout << "  Nuskaitymas: " << rezultatai.nuskaitymai[j] << " s\n";
+
+    t.reset();
+    for (Studentas& st : grupe) {
+        skaiciuotiGalutini(st);
+    }
+    rezultatai.galutiniai.push_back(t.elapsed());
+    std::cout << "  Galutinių skaičiavimas: " << rezultatai.galutiniai[j] << " s\n";
+
+    t.reset();
+
+    rusiuotiStudentus(grupe, rusiuoti);
+    rezultatai.rusiavimai.push_back(t.elapsed());
+    std::cout << "  Rūšiavimas: " << rezultatai.rusiavimai[j] << " s\n";
+
+    t.reset();
+    Konteineris nuskriaustukai, kietukai;
+    skirstytiStudentus(grupe, nuskriaustukai, kietukai);
+    grupe.clear();
+    rezultatai.dalijimai.push_back(t.elapsed());
+    std::cout << "  Dalijimas į dvi grupes: " << rezultatai.dalijimai[j] << " s\n";
+
+    t.reset();
+    isvestiStudentus(nuskriaustukai, failoPavadinimas("nuskriaustukai", i));
+    rezultatai.isvedimaiNuskriaustuku.push_back(t.elapsed());
+    std::cout << "  Nuskriaustukų išvedimas: " << rezultatai.isvedimaiNuskriaustuku[j] << " s\n";
+
+    t.reset();
+    isvestiStudentus(kietukai, failoPavadinimas("kietukai", i));
+    rezultatai.isvedimaiKietuku.push_back(t.elapsed());
+    std::cout << "  Kietukų išvedimas: " << rezultatai.isvedimaiKietuku[j] << " s\n";
+    rezultatai.bendri.push_back(apdorojimas.elapsed());
+    std::cout << "  Viso apdorojimas: " << rezultatai.bendri[j] << " s\n\n";
 }

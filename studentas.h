@@ -1,6 +1,8 @@
 #ifndef OOP_PROJECT_STUDENTAS_H
 #define OOP_PROJECT_STUDENTAS_H
 
+#include <algorithm>
+#include <list>
 #include <numeric>
 #include <string>
 #include <vector>
@@ -18,7 +20,29 @@ struct Studentas {
 
 
 void skaiciuotiGalutini(Studentas& st);
-void rusiuotiStudentus(std::vector<Studentas>& grupe, Rusiuoti r);
-void skirstytiStudentus(std::vector<Studentas>& grupe, std::vector<Studentas>& nuskriaustukai, std::vector<Studentas>& kietukai);
+template <typename Konteineris>
+void rusiuotiStudentus(Konteineris grupe, Rusiuoti r) {
+    auto cmp = [r](const Studentas& a, const Studentas& b) {
+        switch (r) {
+            case Rusiuoti::Varda:    return a.vardas < b.vardas;
+            case Rusiuoti::Pavarde:   return a.pavarde < b.pavarde;
+            case Rusiuoti::Pazymi: return a.galutinis < b.galutinis;
+        }
+        return false;
+    };
+    if constexpr (std::is_same_v<Konteineris, std::list<Studentas>>) {
+        grupe.sort(cmp);
+    }
+    else {
+        std::sort(grupe.begin(), grupe.end(), cmp);
+    }
+}
+
+template <typename Konteineris>
+void skirstytiStudentus(Konteineris& grupe, Konteineris& nuskriaustukai, Konteineris& kietukai) {
+    for (Studentas& st : grupe) {
+        (st.galutinis < ISLAIKYMO_RIBA ? nuskriaustukai : kietukai).push_back(std::move(st));
+    }
+}
 
 #endif  // OOP_PROJECT_STUDENTAS_H
