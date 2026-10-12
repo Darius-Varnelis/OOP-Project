@@ -9,9 +9,10 @@
 
 #include "studentas.h"
 
-std::string failoPavadinimas(const std::string& pradzia, int n);
+std::string failoPavadinimas(const std::string& pradzia, const std::string& n);
 
-void generuotiFaila(int n);
+
+void generuotiFaila(const std::string& n);
 void rasytiAntraste(std::ostream& out);
 void rasytiStudenta(std::ostream& out, const Studentas& st);
 
@@ -42,6 +43,7 @@ void nuskaitytiStudentus(Konteineris& grupe, const std::string& filename) {
         grupe.push_back(std::move(st));
     }
 }
+
 template <typename Konteineris>
 void isvestiStudentus(const Konteineris& grupe, const std::string& filename) {
     std::ofstream out(filename);

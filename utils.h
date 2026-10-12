@@ -17,11 +17,6 @@ size_t utf8Ilgis(const std::string& tekstas);
 // setw plotis, kompensuojantis daugiabaičius UTF-8 simbolius
 int utf8Plotis(const std::string& tekstas);
 
-// Skaičiaus įvedimas per konsolę
-int ivestiSk(const std::string& klausimas, int nuo, int iki);
-
-// Funkcija, gražinanti loginę reikšmę taip ar ne klausimui
-bool taipArNe(const std::string& klausimas);
 
 template <typename T>
 double vidurkis(const std::vector<T>& v) {

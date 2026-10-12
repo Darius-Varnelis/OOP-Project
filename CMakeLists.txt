@@ -15,4 +15,6 @@ add_executable(OOP_Project
         utils.cpp
         results.cpp
         results.h
+        manual.cpp
+        manual.h
 )
