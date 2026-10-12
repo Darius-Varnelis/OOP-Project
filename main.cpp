@@ -16,7 +16,7 @@
 #include "utils.h"
 #include "results.h"
 template <typename Konteineris>
-void testas (int i, int j, const std::string& pavadinimas, Rezultatai& rezultatai, Rusiuoti rusiuoti, Struktura struktura);
+void testas (int i, int j, const std::string& pavadinimas, Rezultatai& rezultatai, Rusiuoti rusiuoti);
 int main() {
 #ifdef _WIN32
     SetConsoleOutputCP(CP_UTF8);
@@ -58,10 +58,10 @@ int main() {
         for (int j = 0; j < KARTAI; j++){
             std::cout << j+1 << "-oji iteracija\n";
             if (struktura == Struktura::Vector){
-                testas<std::vector<Studentas>>(i, j, pavadinimas, rezultatai, rusiuoti, struktura);
+                testas<std::vector<Studentas>>(i, j, pavadinimas, rezultatai, rusiuoti);
             }
             else {
-                testas<std::list<Studentas>>(i,j,pavadinimas,rezultatai,rusiuoti, struktura);
+                testas<std::list<Studentas>>(i,j,pavadinimas,rezultatai,rusiuoti);
             }
     }
         visi.push_back(rezultatai);
@@ -70,10 +70,11 @@ int main() {
     spausdintiLentele(lentele,visi);
 }
 template <typename Konteineris>
-void testas (const int i, const int j, const std::string& pavadinimas, Rezultatai& rezultatai, Rusiuoti rusiuoti, Struktura struktura){
+void testas (const int i, const int j, const std::string& pavadinimas, Rezultatai& rezultatai, Rusiuoti rusiuoti){
     Konteineris grupe;
     Timer apdorojimas;
     Timer t;
+    std::cout << "  Grupės adresas atmintyje: " << &grupe <<"\n";
     nuskaitytiStudentus(grupe, pavadinimas);
     rezultatai.nuskaitymai.push_back(t.elapsed());
     std::cout << "  Nuskaitymas: " << rezultatai.nuskaitymai[j] << " s\n";
