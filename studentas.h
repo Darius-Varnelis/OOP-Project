@@ -21,7 +21,7 @@ struct Studentas {
 
 void skaiciuotiGalutini(Studentas& st);
 template <typename Konteineris>
-void rusiuotiStudentus(Konteineris grupe, Rusiuoti r) {
+void rusiuotiStudentus(Konteineris& grupe, Rusiuoti r) {
     auto cmp = [r](const Studentas& a, const Studentas& b) {
         switch (r) {
             case Rusiuoti::Varda:    return a.vardas < b.vardas;

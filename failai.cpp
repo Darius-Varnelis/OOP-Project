@@ -34,20 +34,20 @@ void generuotiFaila(const int n) {
     const auto seed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
     std::mt19937 gen(static_cast<std::mt19937::result_type>(seed));
     std::uniform_int_distribution<int> pazymiuDist(MIN_PAZ, MAX_PAZ);
-    std::uniform_int_distribution<int> ndDist(1, 20);
-    const int ndKiekis = ndDist(gen);
+    //std::uniform_int_distribution<int> ndDist(1, 20);
+    const int ndKiekis = 20; //set to constant for testing and benchmarking
 
     const string pavadinimas = failoPavadinimas("kursiokai", n);
     std::cout << "Generuojamas failas " << pavadinimas << "\n";
     std::ostringstream ss;
-
+    std::ofstream output(pavadinimas);
     ss << std::left << std::setw(PLOTIS) << "Vardas";
     ss << std::setw(utf8Plotis("Pavardė")) << "Pavardė";
     for (int i = 0; i < ndKiekis; i++) {
         ss << std::setw(PLOTIS) << "ND" + std::to_string(i + 1);
     }
     ss << std::setw(PLOTIS) << "Egzaminas" << "\n";
-
+    int bufferSize = 0;
     for (int i = 0; i < n; i++) {
         ss << std::left << std::setw(PLOTIS) << "Vardenis" + std::to_string(i + 1);
         ss << std::setw(PLOTIS) << "Pavardenis" + std::to_string(i + 1);
@@ -56,9 +56,14 @@ void generuotiFaila(const int n) {
             ss << std::setw(PLOTIS) << pazymiuDist(gen);
         }
         ss << std::setw(PLOTIS) << pazymiuDist(gen) << "\n";
-    }
-    std::ofstream output(pavadinimas);
+        bufferSize++;
+        if (bufferSize > 10000) {
+            output << ss.str();
+            ss.str("");
+            bufferSize = 0;
+        }
 
+    }
     output << ss.str();
 }
 
