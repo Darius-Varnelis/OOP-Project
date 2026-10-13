@@ -4,10 +4,13 @@
 
 #ifndef OOP_PROJECT_MANUAL_H
 #define OOP_PROJECT_MANUAL_H
+#include <chrono>
 #include <iomanip>
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <random>
+
 #include "studentas.h"
 #include "utils.h"
 
@@ -22,7 +25,10 @@ int ivestiSk(const std::string& klausimas, int nuo, int iki);
 bool taipArNe(const std::string& klausimas);
 bool iSkaiciu(const std::string& tekstas, int& rezultatas);
 template <typename Konteineris>
-void ivestiRanka(bool zinomas_sk, Statistika statistika, std::ostream& output, Rusiuoti rusiuoti) {
+void ivestiRanka(bool zinomas_sk, Statistika statistika, Rezimas rezimas, std::ostream& output, Rusiuoti rusiuoti) {
+    const auto seed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
+    std::mt19937 gen(static_cast<std::mt19937::result_type>(seed));
+    std::uniform_int_distribution<int> pazymiu_dist(MIN_PAZ, MAX_PAZ);
     Konteineris grupe;
     const int studkiekis = ivestiSk("Kiek yra studentų? ", 0, BE_RIBOS);
     for (int i = 0; i < studkiekis; i++) {
@@ -37,9 +43,19 @@ void ivestiRanka(bool zinomas_sk, Statistika statistika, std::ostream& output, R
 
         if (zinomas_sk) {
             const int kiekis = ivestiSk("Kiek studentas turi pažymių? ", 1, BE_RIBOS);
-            for (int j = 1; j <= kiekis; j++) {
-                st.paz.push_back(
-                    ivestiSk("Įveskite " + std::to_string(j) + "-ąjį pažymį: ", MIN_PAZ, MAX_PAZ));
+            if (rezimas == Rezimas::Ranka) {
+                for (int j = 1; j <= kiekis; j++) {
+                    st.paz.push_back(
+                        ivestiSk("Įveskite " + std::to_string(j) + "-ąjį pažymį: ", MIN_PAZ, MAX_PAZ));
+                    std::cout << '\n';
+                }
+            } else {
+                std::cout << "Suvesti atsitiktiniai pažymiai: ";
+                for (int j = 0; j < kiekis; j++) {
+                    const int sk = pazymiu_dist(gen);
+                    st.paz.push_back(sk);
+                    std::cout << sk << " ";
+                }
                 std::cout << '\n';
             }
         }
@@ -58,18 +74,24 @@ void ivestiRanka(bool zinomas_sk, Statistika statistika, std::ostream& output, R
                 }
             }
         }
-        st.exam = ivestiSk("Įveskite egzamino rezultatą: ", MIN_PAZ, MAX_PAZ);
+        if (rezimas == Rezimas::Generavimas) {
+            st.exam = pazymiu_dist(gen);
+            std::cout << "Atsitiktinis egzamino rezultatas: " << st.exam << '\n';
+        } else {
+            st.exam = ivestiSk("Įveskite egzamino rezultatą: ", MIN_PAZ, MAX_PAZ);
+
+        }
         skaiciuotiGalutini(st);
         std::cout << "Įvesto studento adresas atmintyje: " << &st<<"\n";
         grupe.push_back(st);
+        rusiuotiStudentus(grupe, rusiuoti);
+
     }
-    rusiuotiStudentus(grupe, rusiuoti);
     pagalba::rasytiAntraste(output, statistika);
     for (Studentas& st : grupe) {
         pagalba::rasytiStudenta(output, st, statistika);
     }
-    }
-
+}
 
 int nustatymai(const std::string& klausimas, const std::string& pasirinkimai);
 

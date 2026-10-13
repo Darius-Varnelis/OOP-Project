@@ -53,33 +53,39 @@ int main() {
         return 0;
     }
     auto isvedimas = static_cast<Isvedimas>(nustatymai("Kur išvesti studentų duomenis?","Į konsolę;Į failą"));
-    bool arZinomasSk = taipArNe("Ar žinomas namų darbų skaičius?");
-    if (rezimas == Rezimas::Ranka and rezimas != Rezimas::Benchmark) {
+    bool arZinomasSk;
+    if (rezimas == Rezimas::Benchmark) {
+        arZinomasSk = taipArNe("Ar žinomas namų darbų skaičius?");
+    }
+    else {
+        arZinomasSk = true;
+    }
+    if ((rezimas == Rezimas::Ranka or rezimas == Rezimas::Generavimas) and rezimas != Rezimas::Benchmark) {
         auto statistika = static_cast<Statistika>(nustatymai("Kokios statistikos pageidaujate?","Vidurkio;Medianos;Abiejų"));
         if (isvedimas == Isvedimas::Konsole) {
             if (struktura == Struktura::List){
-                ivestiRanka<std::list<Studentas>>(arZinomasSk,statistika, std::cout, rusiuoti);
+                ivestiRanka<std::list<Studentas>>(arZinomasSk,statistika, rezimas, std::cout, rusiuoti);
             } else {
-                ivestiRanka<std::vector<Studentas>>(arZinomasSk,statistika, std::cout, rusiuoti);
+                ivestiRanka<std::vector<Studentas>>(arZinomasSk,statistika, rezimas, std::cout, rusiuoti);
             }
         }
         else {
             std::string failoPavadinimas;
             std::cout << "Įveskite failo pavadinimą: ";
             std::cin >> failoPavadinimas;
-            std::ofstream failas(failoPavadinimas);
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            std::ofstream failas(failoPavadinimas+".txt");
             if (!failas) {
                 std::cout << "Nepavyko atidaryti failo!\n";
                 return 0;
             }
             if (struktura == Struktura::List) {
-                ivestiRanka<std::list<Studentas>>(arZinomasSk, statistika, failas, rusiuoti);
+                ivestiRanka<std::list<Studentas>>(arZinomasSk, statistika, rezimas, failas, rusiuoti);
             } else {
-                ivestiRanka<std::vector<Studentas>>(arZinomasSk, statistika, failas, rusiuoti);
+                ivestiRanka<std::vector<Studentas>>(arZinomasSk, statistika, rezimas, failas, rusiuoti);
             }
         }
     }
-
 }
 template <typename Konteineris>
 void testas (int i, int j, const std::string& pavadinimas, Rezultatai& rezultatai, Rusiuoti rusiuoti){
