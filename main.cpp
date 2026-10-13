@@ -56,9 +56,9 @@ int main() {
     if (rezimas == Rezimas::Ranka and rezimas != Rezimas::Benchmark) {
         auto statistika = static_cast<Statistika>(nustatymai("Kokios statistikos pageidaujate?","Vidurkio;Medianos;Abiejų"));
         if (struktura == Struktura::List){
-            ivestiRanka<std::list<Studentas>>(arZinomasSk,statistika, std::cout);
+            ivestiRanka<std::list<Studentas>>(arZinomasSk,statistika, std::cout, rusiuoti);
         } else {
-            ivestiRanka<std::vector<Studentas>>(arZinomasSk,statistika, std::cout);
+            ivestiRanka<std::vector<Studentas>>(arZinomasSk,statistika, std::cout, rusiuoti);
         }
     }
 

@@ -10,7 +10,7 @@
 enum class Rusiuoti{Varda,Pavarde,Pazymi};
 enum class Struktura{Vector,List};
 enum class Rezimas{Ranka,Failas,Generavimas, Benchmark};
-
+enum class Statistika {Mediana, Vidurkis, Abu};
 constexpr double ISLAIKYMO_RIBA = 5.0;
 
 struct Studentas {

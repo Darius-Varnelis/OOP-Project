@@ -3,7 +3,7 @@
 //
 
 #include "manual.h"
-
+#include "studentas.h"
 #include "utils.h"
 #include <iostream>
 #include <sstream>
@@ -25,11 +25,11 @@ namespace pagalba {
         out << std::left << std::setw(utf8Plotis(st.vardas)) << st.vardas << "|";
         out << std::setw(utf8Plotis(st.pavarde)) << st.pavarde << "|";
         if (statistika == Statistika::Vidurkis) {
-            out << std::setw(PLOTIS)<< std::fixed << std::setprecision(2) << 0.4*vidurkis(st.paz)+0.6*st.exam << "|\n";
+            out << std::setw(PLOTIS)<< std::fixed << std::setprecision(2) << st.galutinis<< "|\n";
         } else if (statistika == Statistika::Mediana) {
             out << std::setw(PLOTIS)<< std::fixed << std::setprecision(2) << 0.4*mediana(st.paz)+0.6*st.exam  << "|\n";
         } else if (statistika == Statistika::Abu) {
-            out << std::setw(PLOTIS)<< std::fixed << std::setprecision(2) << 0.4*vidurkis(st.paz)+0.6*st.exam << "|" <<std::setw(PLOTIS)<< 0.4*mediana(st.paz)+0.6*st.exam << "|\n";
+            out << std::setw(PLOTIS)<< std::fixed << std::setprecision(2) << st.galutinis<< "|" <<std::setw(PLOTIS)<< 0.4*mediana(st.paz)+0.6*st.exam << "|\n";
         }
     }
 }

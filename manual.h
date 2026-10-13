@@ -10,7 +10,7 @@
 #include <fstream>
 #include "studentas.h"
 #include "utils.h"
-enum class Statistika {Mediana, Vidurkis, Abu};
+
 namespace pagalba {
     void rasytiAntraste(std::ostream& out, Statistika statistika);
     void rasytiStudenta(std::ostream& out, const Studentas& st, Statistika statistika);
@@ -22,7 +22,7 @@ int ivestiSk(const std::string& klausimas, int nuo, int iki);
 bool taipArNe(const std::string& klausimas);
 bool iSkaiciu(const std::string& tekstas, int& rezultatas);
 template <typename Konteineris>
-void ivestiRanka(bool zinomas_sk, Statistika statistika, std::ostream& output) {
+void ivestiRanka(bool zinomas_sk, Statistika statistika, std::ostream& output, Rusiuoti rusiuoti) {
     Konteineris grupe;
     const int studkiekis = ivestiSk("Kiek yra studentų? ", 0, BE_RIBOS);
     for (int i = 0; i < studkiekis; i++) {
@@ -59,8 +59,10 @@ void ivestiRanka(bool zinomas_sk, Statistika statistika, std::ostream& output) {
             }
         }
         st.exam = ivestiSk("Įveskite egzamino rezultatą: ", MIN_PAZ, MAX_PAZ);
+        skaiciuotiGalutini(st);
         grupe.push_back(st);
     }
+    rusiuotiStudentus(grupe, rusiuoti);
     pagalba::rasytiAntraste(output, statistika);
     for (Studentas& st : grupe) {
         pagalba::rasytiStudenta(output, st, statistika);
