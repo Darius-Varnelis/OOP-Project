@@ -9,7 +9,7 @@
 
 enum class Rusiuoti{Varda,Pavarde,Pazymi};
 enum class Struktura{Vector,List};
-enum class Rezimas{Ranka,Failas,Benchmark};
+enum class Rezimas{Ranka,Failas,Generavimas, Benchmark};
 
 constexpr double ISLAIKYMO_RIBA = 5.0;
 

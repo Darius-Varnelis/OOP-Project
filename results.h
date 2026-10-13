@@ -5,7 +5,7 @@
 #include <vector>
 
 struct Rezultatai {
-    std::string dydis;
+    int dydis;
     std::vector<double> nuskaitymai, galutiniai, rusiavimai,
                         dalijimai, isvedimaiNuskriaustuku, isvedimaiKietuku, bendri;
 };

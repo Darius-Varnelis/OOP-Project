@@ -9,10 +9,10 @@
 
 #include "studentas.h"
 
-std::string failoPavadinimas(const std::string& pradzia, const std::string& n);
+std::string failoPavadinimas(const std::string& pradzia,const int& n);
 
 
-void generuotiFaila(const std::string& n);
+void generuotiFaila(const int& n);
 void rasytiAntraste(std::ostream& out);
 void rasytiStudenta(std::ostream& out, const Studentas& st);
 

@@ -14,8 +14,6 @@
 using std::string;
 using std::vector;
 
-
-
 void rasytiAntraste(std::ostream& out) {
     out << std::left << std::setw(PLOTIS) << "Vardas" << "|";
     out << std::setw(utf8Plotis("Pavardė")) << "Pavardė" << "|";
@@ -28,11 +26,11 @@ void rasytiStudenta(std::ostream& out, const Studentas& st) {
     out << std::right << std::setw(PLOTIS) << st.galutinis << "|\n";
 }
 
-string failoPavadinimas(const string& pradzia,const string& n) {
-    return pradzia + n + ".txt";
+string failoPavadinimas(const string& pradzia,const int& n) {
+    return pradzia + std::to_string(n) + ".txt";
 }
 
-void generuotiFaila(const string& n) {
+void generuotiFaila(const int& n) {
     const auto seed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
     std::mt19937 gen(static_cast<std::mt19937::result_type>(seed));
     std::uniform_int_distribution<int> pazymiuDist(MIN_PAZ, MAX_PAZ);
@@ -50,7 +48,7 @@ void generuotiFaila(const string& n) {
     }
     ss << std::setw(PLOTIS) << "Egzaminas" << "\n";
     int bufferSize = 0;
-    for (int i = 0; i < std::stoi(n); i++) {
+    for (int i = 0; i < n; i++) {
         ss << std::left << std::setw(PLOTIS) << "Vardenis" + std::to_string(i + 1);
         ss << std::setw(PLOTIS) << "Pavardenis" + std::to_string(i + 1);
         ss << std::right;
@@ -71,7 +69,7 @@ void generuotiFaila(const string& n) {
 
 bool arFailaiEgzistuoja(int min, int max) {
     for (int i = min; i <= max; i *= 10) {
-        std::ifstream file(failoPavadinimas("kursiokai", std::to_string(i)));
+        std::ifstream file(failoPavadinimas("kursiokai", i));
         if (!file.is_open()) {
             return false;
         }
