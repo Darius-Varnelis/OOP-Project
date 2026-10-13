@@ -16,7 +16,7 @@
 #include "manual.h"
 #include "results.h"
 template <typename Konteineris>
-void testas (int i, int j, const std::string& pavadinimas, Rezultatai& rezultatai, Rusiuoti rusiuoti);
+void testas(int i, int j, const std::string& pavadinimas, Rezultatai& rezultatai, Rusiuoti rusiuoti);
 Rezultatai testuPaleistuvas(int i, const Struktura& struktura, const Rusiuoti& rusiuoti);
 constexpr int KARTAI = 5;
 int main() {
@@ -25,15 +25,17 @@ int main() {
     SetConsoleCP(CP_UTF8);
 #endif
 
-
     std::cout << std::fixed << std::setprecision(3);
-    auto struktura = static_cast<Struktura>(nustatymai("Į kokią C++ struktūrą vesti studentus?","Vector;List"));
-    auto rusiuoti = static_cast<Rusiuoti>(nustatymai("Pagal ką rūšiuoti išvesties failus?","Vardą;Pavardę;Galutinį balą"));
-    auto rezimas = static_cast<Rezimas>(nustatymai("Koks programos rėžimas?","Studentų įvedimas ranka;Studentų nuskaitymas iš failo;Automatinis generavimas;Programos greitumo testavimas"));
+    auto struktura = static_cast<Struktura>(nustatymai("Į kokią C++ struktūrą vesti studentus?", "Vector;List"));
+    auto rusiuoti =
+        static_cast<Rusiuoti>(nustatymai("Pagal ką rūšiuoti išvesties failus?", "Vardą;Pavardę;Galutinį balą"));
+    auto rezimas = static_cast<Rezimas>(nustatymai(
+        "Koks programos rėžimas?",
+        "Studentų įvedimas ranka;Studentų nuskaitymas iš failo;Automatinis generavimas;Programos greitumo testavimas"));
     if (rezimas == Rezimas::Benchmark) {
         constexpr int MAXFAILAS = 10000000;
         constexpr int MINFAILAS = 1000;
-        if (!arFailaiEgzistuoja(MINFAILAS,MAXFAILAS) or taipArNe("Ar generuoti naujus failus? [y/n]")) {
+        if (!arFailaiEgzistuoja(MINFAILAS, MAXFAILAS) or taipArNe("Ar generuoti naujus failus? [y/n]")) {
             Timer visasGeneravimas;
             for (int i = MINFAILAS; i <= MAXFAILAS; i *= 10) {
                 Timer t;
@@ -46,35 +48,34 @@ int main() {
         for (int i = MINFAILAS; i <= MAXFAILAS; i *= 10) {
             Rezultatai rezultatai = testuPaleistuvas(i, struktura, rusiuoti);
             visi.push_back(rezultatai);
-            }
+        }
 
         std::string lentele = "lentele.txt";
-        spausdintiLentele(lentele,visi);
+        spausdintiLentele(lentele, visi);
         return 0;
     }
-    auto isvedimas = static_cast<Isvedimas>(nustatymai("Kur išvesti studentų duomenis?","Į konsolę;Į failą"));
+    auto isvedimas = static_cast<Isvedimas>(nustatymai("Kur išvesti studentų duomenis?", "Į konsolę;Į failą"));
     bool arZinomasSk;
     if (rezimas == Rezimas::Benchmark) {
         arZinomasSk = taipArNe("Ar žinomas namų darbų skaičius?");
-    }
-    else {
+    } else {
         arZinomasSk = true;
     }
     if ((rezimas == Rezimas::Ranka or rezimas == Rezimas::Generavimas) and rezimas != Rezimas::Benchmark) {
-        auto statistika = static_cast<Statistika>(nustatymai("Kokios statistikos pageidaujate?","Vidurkio;Medianos;Abiejų"));
+        auto statistika =
+            static_cast<Statistika>(nustatymai("Kokios statistikos pageidaujate?", "Vidurkio;Medianos;Abiejų"));
         if (isvedimas == Isvedimas::Konsole) {
-            if (struktura == Struktura::List){
-                ivestiRanka<std::list<Studentas>>(arZinomasSk,statistika, rezimas, std::cout, rusiuoti);
+            if (struktura == Struktura::List) {
+                ivestiRanka<std::list<Studentas>>(arZinomasSk, statistika, rezimas, std::cout, rusiuoti);
             } else {
-                ivestiRanka<std::vector<Studentas>>(arZinomasSk,statistika, rezimas, std::cout, rusiuoti);
+                ivestiRanka<std::vector<Studentas>>(arZinomasSk, statistika, rezimas, std::cout, rusiuoti);
             }
-        }
-        else {
+        } else {
             std::string failoPavadinimas;
             std::cout << "Įveskite failo pavadinimą: ";
             std::cin >> failoPavadinimas;
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            std::ofstream failas(failoPavadinimas+".txt");
+            std::ofstream failas(failoPavadinimas + ".txt");
             if (!failas) {
                 std::cout << "Nepavyko atidaryti failo!\n";
                 return 0;
@@ -88,11 +89,11 @@ int main() {
     }
 }
 template <typename Konteineris>
-void testas (int i, int j, const std::string& pavadinimas, Rezultatai& rezultatai, Rusiuoti rusiuoti){
+void testas(int i, int j, const std::string& pavadinimas, Rezultatai& rezultatai, Rusiuoti rusiuoti) {
     Konteineris grupe;
     Timer apdorojimas;
     Timer t;
-    std::cout << "  Grupės adresas atmintyje: " << &grupe <<"\n";
+    std::cout << "  Grupės adresas atmintyje: " << &grupe << "\n";
     nuskaitytiStudentus(grupe, pavadinimas);
     rezultatai.nuskaitymai.push_back(t.elapsed());
     std::cout << "  Nuskaitymas: " << rezultatai.nuskaitymai[j] << " s\n";
@@ -136,12 +137,11 @@ Rezultatai testuPaleistuvas(int i, const Struktura& struktura, const Rusiuoti& r
     std::string fileName = failoPavadinimas("kursiokai", i);
     std::cout << "Apdorojamas failas " << fileName << "\n";
     for (int j = 0; j < KARTAI; j++) {
-        std::cout << j+1 << "-oji iteracija\n";
-        if (struktura == Struktura::Vector){
+        std::cout << j + 1 << "-oji iteracija\n";
+        if (struktura == Struktura::Vector) {
             testas<std::vector<Studentas>>(i, j, fileName, rezultatai, rusiuoti);
-        }
-        else {
-            testas<std::list<Studentas>>(i,j,fileName,rezultatai,rusiuoti);
+        } else {
+            testas<std::list<Studentas>>(i, j, fileName, rezultatai, rusiuoti);
         }
     }
     return rezultatai;

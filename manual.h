@@ -15,8 +15,8 @@
 #include "utils.h"
 
 namespace pagalba {
-    void rasytiAntraste(std::ostream& out, Statistika statistika);
-    void rasytiStudenta(std::ostream& out, const Studentas& st, Statistika statistika);
+void rasytiAntraste(std::ostream& out, Statistika statistika);
+void rasytiStudenta(std::ostream& out, const Studentas& st, Statistika statistika);
 }
 // Skaičiaus įvedimas per konsolę
 int ivestiSk(const std::string& klausimas, int nuo, int iki);
@@ -45,8 +45,7 @@ void ivestiRanka(bool zinomas_sk, Statistika statistika, Rezimas rezimas, std::o
             const int kiekis = ivestiSk("Kiek studentas turi pažymių? ", 1, BE_RIBOS);
             if (rezimas == Rezimas::Ranka) {
                 for (int j = 1; j <= kiekis; j++) {
-                    st.paz.push_back(
-                        ivestiSk("Įveskite " + std::to_string(j) + "-ąjį pažymį: ", MIN_PAZ, MAX_PAZ));
+                    st.paz.push_back(ivestiSk("Įveskite " + std::to_string(j) + "-ąjį pažymį: ", MIN_PAZ, MAX_PAZ));
                     std::cout << '\n';
                 }
             } else {
@@ -58,8 +57,7 @@ void ivestiRanka(bool zinomas_sk, Statistika statistika, Rezimas rezimas, std::o
                 }
                 std::cout << '\n';
             }
-        }
-        else {
+        } else {
             std::string eilute;
             while (true) {
                 std::cout << "Įveskite " << st.paz.size() + 1 << "-ąjį pažymį (Enter, kad užbaigti): ";
@@ -79,13 +77,11 @@ void ivestiRanka(bool zinomas_sk, Statistika statistika, Rezimas rezimas, std::o
             std::cout << "Atsitiktinis egzamino rezultatas: " << st.exam << '\n';
         } else {
             st.exam = ivestiSk("Įveskite egzamino rezultatą: ", MIN_PAZ, MAX_PAZ);
-
         }
         skaiciuotiGalutini(st);
-        std::cout << "Įvesto studento adresas atmintyje: " << &st<<"\n";
+        std::cout << "Įvesto studento adresas atmintyje: " << &st << "\n";
         grupe.push_back(st);
         rusiuotiStudentus(grupe, rusiuoti);
-
     }
     pagalba::rasytiAntraste(output, statistika);
     for (Studentas& st : grupe) {
@@ -95,5 +91,4 @@ void ivestiRanka(bool zinomas_sk, Statistika statistika, Rezimas rezimas, std::o
 
 int nustatymai(const std::string& klausimas, const std::string& pasirinkimai);
 
-
-#endif //OOP_PROJECT_MANUAL_H
+#endif  // OOP_PROJECT_MANUAL_H

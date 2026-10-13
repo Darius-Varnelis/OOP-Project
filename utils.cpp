@@ -1,11 +1,10 @@
 #include "utils.h"
 #include <stdexcept>
 #include <string>
-#include<iostream>
+#include <iostream>
 #include <numeric>
 #include <vector>
 using std::string;
-
 
 size_t utf8Ilgis(const std::string& tekstas) {
     size_t ilgis = 0;
@@ -26,8 +25,3 @@ double mediana(std::vector<int> paz) {
     }
     return (paz[(paz.size() - 1) / 2] + paz[paz.size() / 2]) / 2.0;
 }
-
-
-
-
-

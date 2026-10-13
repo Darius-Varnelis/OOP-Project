@@ -10,28 +10,30 @@
 using std::string;
 
 namespace pagalba {
-    void rasytiAntraste(std::ostream& out, Statistika statistika) {
-        out << std::left << std::setw(PLOTIS) << "Vardas" << "|";
-        out << std::setw(utf8Plotis("Pavardė")) << "Pavardė" << "|";
-        if (statistika == Statistika::Vidurkis) {
-            out << std::setw(PLOTIS) << "Galutinis (vidurkis)" << "|\n";
-        } else if (statistika == Statistika::Mediana) {
-            out << std::setw(PLOTIS) << "Galutinis (mediana)" << "|\n";
-        } else if (statistika == Statistika::Abu) {
-            out << std::setw(PLOTIS) << "Galutinis (vidurkis)" << "|" << "Galutinis (mediana)" << "|\n";
-        }
+void rasytiAntraste(std::ostream& out, Statistika statistika) {
+    out << std::left << std::setw(PLOTIS) << "Vardas" << "|";
+    out << std::setw(utf8Plotis("Pavardė")) << "Pavardė" << "|";
+    if (statistika == Statistika::Vidurkis) {
+        out << std::setw(PLOTIS) << "Galutinis (vidurkis)" << "|\n";
+    } else if (statistika == Statistika::Mediana) {
+        out << std::setw(PLOTIS) << "Galutinis (mediana)" << "|\n";
+    } else if (statistika == Statistika::Abu) {
+        out << std::setw(PLOTIS) << "Galutinis (vidurkis)" << "|" << "Galutinis (mediana)" << "|\n";
     }
-    void rasytiStudenta(std::ostream& out, const Studentas& st, Statistika statistika) {
-        out << std::left << std::setw(utf8Plotis(st.vardas)) << st.vardas << "|";
-        out << std::setw(utf8Plotis(st.pavarde)) << st.pavarde << "|";
-        if (statistika == Statistika::Vidurkis) {
-            out << std::setw(PLOTIS)<< std::fixed << std::setprecision(2) << st.galutinis<< "|\n";
-        } else if (statistika == Statistika::Mediana) {
-            out << std::setw(PLOTIS)<< std::fixed << std::setprecision(2) << 0.4*mediana(st.paz)+0.6*st.exam  << "|\n";
-        } else if (statistika == Statistika::Abu) {
-            out << std::setw(PLOTIS)<< std::fixed << std::setprecision(2) << st.galutinis<< "|" <<std::setw(PLOTIS)<< 0.4*mediana(st.paz)+0.6*st.exam << "|\n";
-        }
+}
+void rasytiStudenta(std::ostream& out, const Studentas& st, Statistika statistika) {
+    out << std::left << std::setw(utf8Plotis(st.vardas)) << st.vardas << "|";
+    out << std::setw(utf8Plotis(st.pavarde)) << st.pavarde << "|";
+    if (statistika == Statistika::Vidurkis) {
+        out << std::setw(PLOTIS) << std::fixed << std::setprecision(2) << st.galutinis << "|\n";
+    } else if (statistika == Statistika::Mediana) {
+        out << std::setw(PLOTIS) << std::fixed << std::setprecision(2) << 0.4 * mediana(st.paz) + 0.6 * st.exam
+            << "|\n";
+    } else if (statistika == Statistika::Abu) {
+        out << std::setw(PLOTIS) << std::fixed << std::setprecision(2) << st.galutinis << "|" << std::setw(PLOTIS)
+            << 0.4 * mediana(st.paz) + 0.6 * st.exam << "|\n";
     }
+}
 }
 
 bool iSkaiciu(const string& tekstas, int& rezultatas) {
@@ -96,5 +98,5 @@ int nustatymai(const string& klausimas, const string& pasirinkimai) {
         std::cout << "[" << i << "] - " << pasirinkimas << '\n';
         i++;
     }
-    return ivestiSk("Įveskite savo pasirinkimą (nuo 0 iki "+std::to_string(i-1)+"): ", 0, i);
+    return ivestiSk("Įveskite savo pasirinkimą (nuo 0 iki " + std::to_string(i - 1) + "): ", 0, i);
 }

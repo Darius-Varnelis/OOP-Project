@@ -26,7 +26,7 @@ void rasytiStudenta(std::ostream& out, const Studentas& st) {
     out << std::left << std::setw(PLOTIS) << st.galutinis << "|\n";
 }
 
-string failoPavadinimas(const string& pradzia,const int& n) {
+string failoPavadinimas(const string& pradzia, const int& n) {
     return pradzia + std::to_string(n) + ".txt";
 }
 
@@ -34,8 +34,8 @@ void generuotiFaila(const int& n) {
     const auto seed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
     std::mt19937 gen(static_cast<std::mt19937::result_type>(seed));
     std::uniform_int_distribution<int> pazymiuDist(MIN_PAZ, MAX_PAZ);
-    //std::uniform_int_distribution<int> ndDist(1, 20);
-    const int ndKiekis = 20; //set to constant for testing and benchmarking
+    // std::uniform_int_distribution<int> ndDist(1, 20);
+    const int ndKiekis = 20;  // set to constant for testing and benchmarking
 
     const string pavadinimas = failoPavadinimas("kursiokai", n);
     std::cout << "Generuojamas failas " << pavadinimas << "\n";
@@ -62,7 +62,6 @@ void generuotiFaila(const int& n) {
             ss.str("");
             bufferSize = 0;
         }
-
     }
     output << ss.str();
 }

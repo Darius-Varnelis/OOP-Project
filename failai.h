@@ -9,8 +9,7 @@
 
 #include "studentas.h"
 
-std::string failoPavadinimas(const std::string& pradzia,const int& n);
-
+std::string failoPavadinimas(const std::string& pradzia, const int& n);
 
 void generuotiFaila(const int& n);
 void rasytiAntraste(std::ostream& out);
@@ -26,7 +25,8 @@ void nuskaitytiStudentus(Konteineris& grupe, const std::string& filename) {
     std::istringstream antraste(eilute);
     std::string zodis;
     int stulpeliu = 0;
-    while (antraste >> zodis) stulpeliu++;
+    while (antraste >> zodis)
+        stulpeliu++;
     const int pazKiekis = std::max(stulpeliu - 3, 0);  // minus Vardas, Pavardė, Egzaminas
 
     while (std::getline(ins, eilute)) {
