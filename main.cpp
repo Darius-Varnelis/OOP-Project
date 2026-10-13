@@ -52,13 +52,31 @@ int main() {
         spausdintiLentele(lentele,visi);
         return 0;
     }
+    auto isvedimas = static_cast<Isvedimas>(nustatymai("Kur išvesti studentų duomenis?","Į konsolę;Į failą"));
     bool arZinomasSk = taipArNe("Ar žinomas namų darbų skaičius?");
     if (rezimas == Rezimas::Ranka and rezimas != Rezimas::Benchmark) {
         auto statistika = static_cast<Statistika>(nustatymai("Kokios statistikos pageidaujate?","Vidurkio;Medianos;Abiejų"));
-        if (struktura == Struktura::List){
-            ivestiRanka<std::list<Studentas>>(arZinomasSk,statistika, std::cout, rusiuoti);
-        } else {
-            ivestiRanka<std::vector<Studentas>>(arZinomasSk,statistika, std::cout, rusiuoti);
+        if (isvedimas == Isvedimas::Konsole) {
+            if (struktura == Struktura::List){
+                ivestiRanka<std::list<Studentas>>(arZinomasSk,statistika, std::cout, rusiuoti);
+            } else {
+                ivestiRanka<std::vector<Studentas>>(arZinomasSk,statistika, std::cout, rusiuoti);
+            }
+        }
+        else {
+            std::string failoPavadinimas;
+            std::cout << "Įveskite failo pavadinimą: ";
+            std::cin >> failoPavadinimas;
+            std::ofstream failas(failoPavadinimas);
+            if (!failas) {
+                std::cout << "Nepavyko atidaryti failo!\n";
+                return 0;
+            }
+            if (struktura == Struktura::List) {
+                ivestiRanka<std::list<Studentas>>(arZinomasSk, statistika, failas, rusiuoti);
+            } else {
+                ivestiRanka<std::vector<Studentas>>(arZinomasSk, statistika, failas, rusiuoti);
+            }
         }
     }
 

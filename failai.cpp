@@ -23,7 +23,7 @@ void rasytiAntraste(std::ostream& out) {
 void rasytiStudenta(std::ostream& out, const Studentas& st) {
     out << std::left << std::setw(utf8Plotis(st.vardas)) << st.vardas << "|";
     out << std::setw(utf8Plotis(st.pavarde)) << st.pavarde << "|";
-    out << std::right << std::setw(PLOTIS) << st.galutinis << "|\n";
+    out << std::left << std::setw(PLOTIS) << st.galutinis << "|\n";
 }
 
 string failoPavadinimas(const string& pradzia,const int& n) {

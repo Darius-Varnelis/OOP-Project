@@ -60,6 +60,7 @@ void ivestiRanka(bool zinomas_sk, Statistika statistika, std::ostream& output, R
         }
         st.exam = ivestiSk("Įveskite egzamino rezultatą: ", MIN_PAZ, MAX_PAZ);
         skaiciuotiGalutini(st);
+        std::cout << "Įvesto studento adresas atmintyje: " << &st<<"\n";
         grupe.push_back(st);
     }
     rusiuotiStudentus(grupe, rusiuoti);
