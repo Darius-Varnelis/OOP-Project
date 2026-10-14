@@ -46,12 +46,21 @@ int main() {
         }
         std::vector<Rezultatai> visi;
         for (int i = MINFAILAS; i <= MAXFAILAS; i *= 10) {
-            Rezultatai rezultatai = testuPaleistuvas(i, struktura, rusiuoti);
+            std::cout << "Atliekami testai su Vector struktūra.";
+            Rezultatai rezultatai = testuPaleistuvas(i, Struktura::Vector, rusiuoti);
             visi.push_back(rezultatai);
         }
-
-        std::string lentele = "lentele.txt";
+        std::string lentele = "lenteleVector.txt";
         spausdintiLentele(lentele, visi);
+        visi.clear();
+        for (int i = MINFAILAS; i <= MAXFAILAS; i *= 10) {
+            std::cout << "Atliekami testai su List struktūra.";
+            Rezultatai rezultatai = testuPaleistuvas(i, Struktura::List, rusiuoti);
+            visi.push_back(rezultatai);
+        }
+        lentele = "lenteleList.txt";
+        spausdintiLentele(lentele, visi);
+
         return 0;
     }
     auto isvedimas = static_cast<Isvedimas>(nustatymai("Kur išvesti studentų duomenis?", "Į konsolę;Į failą"));
