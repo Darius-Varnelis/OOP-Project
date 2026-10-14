@@ -17,7 +17,7 @@ The program reads and writes data files in its working directory, so run it from
 ## Usage
 Upon running the compiled program, the user will be prompted with several options to decide the behavior of the program. 
 ```math
-Final grade = 0.4 \cdot average  + 0.6 \cdot exam
+Final grade = 0.4 \cdot average\space or\space median + 0.6 \cdot exam
 ```
 
 ## Structure
