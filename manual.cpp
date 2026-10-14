@@ -18,7 +18,7 @@ void rasytiAntraste(std::ostream& out, Statistika statistika) {
     } else if (statistika == Statistika::Mediana) {
         out << std::setw(PLOTIS) << "Galutinis (mediana)" << "|\n";
     } else if (statistika == Statistika::Abu) {
-        out << std::setw(PLOTIS) << "Galutinis (vidurkis)" << "|" << "Galutinis (mediana)" << "|\n";
+        out << std::setw(PLOTIS) << "Galutinis (vidurkis)" << "|" << std::setw(PLOTIS) << "Galutinis (mediana)" << "|\n";
     }
 }
 void rasytiStudenta(std::ostream& out, const Studentas& st, Statistika statistika) {
@@ -83,7 +83,7 @@ bool taipArNe(const string& klausimas) {
             return false;
         }
         std::cout << "Įveskite \"n\" arba \"y\"\n";
-        std::cout << klausimas;
+        std::cout << klausimas << " [y/n]: ";
     }
     std::cout << "Nepavyko nuskaityti atsakymo, priskiaramas [n] atsakynas" << std::endl;
     return false;
