@@ -26,16 +26,16 @@ int main() {
 #endif
 
     std::cout << std::fixed << std::setprecision(3);
-    auto struktura = static_cast<Struktura>(nustatymai("Į kokią C++ struktūrą vesti studentus?", "Vector;List"));
-    auto rusiuoti =
-        static_cast<Rusiuoti>(nustatymai("Pagal ką rūšiuoti išvesties failus?", "Vardą;Pavardę;Galutinį balą"));
     auto rezimas = static_cast<Rezimas>(nustatymai(
         "Koks programos rėžimas?",
         "Studentų įvedimas ranka;Studentų nuskaitymas iš failo;Automatinis generavimas;Programos greitumo testavimas"));
+    auto rusiuoti =
+        static_cast<Rusiuoti>(nustatymai("Pagal ką rūšiuoti išvesties failus?", "Vardą;Pavardę;Galutinį balą"));
+
     if (rezimas == Rezimas::Benchmark) {
         constexpr int MAXFAILAS = 10000000;
         constexpr int MINFAILAS = 1000;
-        if (!arFailaiEgzistuoja(MINFAILAS, MAXFAILAS) or taipArNe("Ar generuoti naujus failus? [y/n]")) {
+        if (!arFailaiEgzistuoja(MINFAILAS, MAXFAILAS) or taipArNe("Ar generuoti naujus failus?")) {
             Timer visasGeneravimas;
             for (int i = MINFAILAS; i <= MAXFAILAS; i *= 10) {
                 Timer t;
@@ -45,16 +45,18 @@ int main() {
             std::cout << "Visų failų generavimas užtruko: " << visasGeneravimas.elapsed() << " s\n\n";
         }
         std::vector<Rezultatai> visi;
+        std::cout << "Atliekami testai su Vector struktūra.\n";
         for (int i = MINFAILAS; i <= MAXFAILAS; i *= 10) {
-            std::cout << "Atliekami testai su Vector struktūra.";
+
             Rezultatai rezultatai = testuPaleistuvas(i, Struktura::Vector, rusiuoti);
             visi.push_back(rezultatai);
         }
         std::string lentele = "lenteleVector.txt";
         spausdintiLentele(lentele, visi);
         visi.clear();
+        std::cout << "Atliekami testai su List struktūra.\n";
         for (int i = MINFAILAS; i <= MAXFAILAS; i *= 10) {
-            std::cout << "Atliekami testai su List struktūra.";
+
             Rezultatai rezultatai = testuPaleistuvas(i, Struktura::List, rusiuoti);
             visi.push_back(rezultatai);
         }
@@ -63,6 +65,9 @@ int main() {
 
         return 0;
     }
+
+
+    auto struktura = static_cast<Struktura>(nustatymai("Į kokią C++ struktūrą vesti studentus?", "Vector;List"));
     auto isvedimas = static_cast<Isvedimas>(nustatymai("Kur išvesti studentų duomenis?", "Į konsolę;Į failą"));
     bool arZinomasSk;
     if (rezimas == Rezimas::Benchmark) {
@@ -102,7 +107,6 @@ void testas(int i, int j, const std::string& pavadinimas, Rezultatai& rezultatai
     Konteineris grupe;
     Timer apdorojimas;
     Timer t;
-    std::cout << "  Grupės adresas atmintyje: " << &grupe << "\n";
     nuskaitytiStudentus(grupe, pavadinimas);
     rezultatai.nuskaitymai.push_back(t.elapsed());
     std::cout << "  Nuskaitymas: " << rezultatai.nuskaitymai[j] << " s\n";
