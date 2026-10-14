@@ -25,24 +25,48 @@ Final grade = 0.4 \cdot average\space or\space median + 0.6 \cdot exam
 ```
 
 ## Structure
+Most of the logic is written as function templates over a generic `Konteineris` type, so the same code works with both `std::vector<Studentas>` and `std::list<Studentas>`. The container is chosen once, at runtime, in `main.cpp`. Where the two containers need different code (sorting), `if constexpr` picks the right version at compile time.
+
 ### main.cpp
-This file houses all the logic for the program, including the options that the user must select.
-### manual.cpp and manual.h
-These files contain the logic required for user interaction through the console, as well as the logic for executing program functions not related to benchmarking.
+The program's entry point. It asks the user to choose a mode (manual entry, random generation, reading from a file, or benchmark), a sort field and order, a container, an output target and which statistic to show. It then calls the matching template function with either `std::vector<Studentas>` or `std::list<Studentas>`.
+
+### studentas.h / studentas.cpp
+- `struct Studentas`: first name, last name, homework grades, exam grade and final grade.
+- `skaiciuotiGalutini()`: calculates the final grade (0.4 × homework average + 0.6 × exam).
+- `rusiuotiStudentus()`: sorts by first name, last name or final grade, in ascending or descending order. Uses `std::sort` for `vector` and the member `list::sort()` for `list`.
+- `skirstytiStudentus()`: splits students into failing (*nuskriaustukai*, final grade < 5) and passing (*kietukai*, final grade ≥ 5) groups.
+
+### manual.h / manual.cpp
+Console interaction and the non-benchmark modes:
+- `nustatymai()`, `ivestiSk()`, `taipArNe()`: menu prompts and validated number and yes/no input.
+- `ivestiRanka()`: manual entry, with an option to generate grades randomly. After each student is added, it prints the student's address in memory.
+- `nuskaitytiIsFailo()`: reads, processes and outputs students from an existing file.
+- `rasytiAntraste()`, `rasytiStudenta()`, `rasytiGrupe()`: write the formatted results table to the console or a file.
+
+### failai.h / failai.cpp
+File I/O:
+- `generuotiFaila()`: generates a test file with *n* random students. The whole file is built in a `stringstream` first and written to disk in one go.
+- `nuskaitytiStudentus()`: reads a student file into any container.
+- `isvestiStudentus()`: writes a group of students to a file.
+- `arFailaiEgzistuoja()`: checks whether the benchmark files already exist, so they don't have to be regenerated.
+
+### testai.h / testai.cpp
+The benchmark. `testas()` times each step (read, final grade calculation, sort, grouping, writing both groups) on one file. `testuPaleistuvas()` repeats the test 5 times per file for the chosen container and averages the results.
+
+### results.h / results.cpp
+`struct Rezultatai` stores the average time for each step. `spausdintiLentele()` exports all results as a Markdown table, which is where the tables in this README come from.
+
 ### nustatymai.h
-This file stores all the enum classes that are used to store program settings.
-### results.cpp and results.h
-These files contain the functions for outputting benchmark results in a Markdown table.
-### studentas.cpp and studentas.h
-These files contain features directly related to the student entity in the program, such as name and last name, grade average and final grade functions.
-### testai.cpp and testai.h
-These files contain the logic for the benchmarking mode of the program.
-### failai.cpp and failai.h
-These files contain functions related to reading data from and writing data to files.
+The `enum class` types that hold the program's settings: `Rezimas`, `Struktura`, `Rusiuoti`, `Tvarka`, `Statistika` and `Isvedimas`.
+
 ### timer.h
-This file contains the timer class used for benchmarking.
-### utils.cpp and utils.h
-These files contain helper functions used in aligning Lithuanian text, inputting yes or no answers and counting averages or medians.
+A small `Timer` class built on `std::chrono::high_resolution_clock`, with `reset()` and `elapsed()`.
+
+### utils.h / utils.cpp
+Helpers: `vidurkis()` (average), `mediana()` (median) and `utf8Plotis()`, which corrects `setw` column width for Lithuanian UTF-8 characters.
+
+### kursiokai.txt
+A small sample student file for testing the read-from-file mode.
 
 
 ## Benchmarking
