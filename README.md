@@ -83,7 +83,16 @@ Test system:
 - Sorted by final grade descending
 
 ### Benchmark Conclusion
-Looking at the benchmark results it is immediately clear that the Vector container type fits this program better. The step that performed the worst on List compared to Vector was sorting. This is not surprising as these two steps benefit most from the Vector container's capability for random access, which the List container lacks. Random access allows the student Vector to use a version of Quick sort which in practice is significantly faster than the version of Merge sort used by List. Additionally, a step that also performed poorly on List was the student grouping step. This is not due an inherent flaw in the List container's design, but mainly due the strategy employed in grouping students. It uses push_back which benefits Vector more. List performance here could be improved by using splice instead. Finally, the last step that seemed to show a difference in performance between the two containers was final grade calculation, List performed roughly 3x worse here than Vector. This is likely due to the fact that the function used to calculate final grades iterates through the container to calculate the final grade of each student in the container. Iteration is faster on Vector due to its capability of random access.
+### Benchmark Conclusion
+The results show that Vector is the better fit for this program. At 10,000,000 students the total processing time was 65.3s with Vector versus 84.4s with List, about 29% slower. The gap starts to show at 100,000 students and widens as the data grows.
+
+Reading the file and writing the results take almost the same time with both containers, because these steps are dominated by text parsing and disk I/O rather than by the container. The difference comes from three steps:
+
+- **Sorting** showed the largest gap: at 10,000,000 students it took 2.7s with Vector and 15.0s with List, roughly 5.5x slower. Vector uses `std::sort` (introsort), which needs random-access iterators and works on elements stored next to each other in memory. List cannot use `std::sort` and relies on its own `list::sort` (merge sort) which is significantly slower.
+- **Grouping** was about 7x slower with List (0.8s vs 5.7s). Each `push_back` into a List allocates a new node on the heap and copies the student into it. Vector only reallocates occasionally, since its capacity grows geometrically. The List version could be improved by moving nodes between lists with `splice`, which needs no allocation or copying.
+- **Final grade calculation** was about 2x slower with List. The difference comes from memory layout: Vector stores its elements next to each other, while List elements are scatter all across memory, which makes it more difficult for the CPU to access.
+
+In short, List's strengths (easy insertion and removal in the middle) are not used by this program, while its weaknesses affect every step that touches the container. Vector is therefore the better choice.
 
 ## Disclaimer
 The generation of the text files is likely to take a large amount of time (about 30 seconds) as well as a large amount of storage (about 1GB). Further processing of the files (5 runs for every file) takes about 6 minutes on the release build and about 15 minutes on the debug build.
