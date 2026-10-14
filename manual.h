@@ -87,9 +87,10 @@ void ivestiRanka(bool zinomas_sk, Statistika statistika, Rezimas rezimas, std::o
         } else {
             st.exam = ivestiSk("Įveskite egzamino rezultatą: ", MIN_PAZ, MAX_PAZ);
         }
-        std::cout << "Įvesto studento adresas atmintyje: " << &st << "\n";
+
         skaiciuotiGalutini(st);
         grupe.push_back(st);
+        std::cout << "Įvesto studento adresas atmintyje: " << &grupe.back() << "\n";
     }
     rusiuotiStudentus(grupe,rusiuoti,tvarka);
     pagalba::rasytiGrupe(output, grupe, statistika);
