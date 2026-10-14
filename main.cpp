@@ -11,6 +11,7 @@
 #endif
 
 #include "failai.h"
+#include "nustatymai.h"
 #include "studentas.h"
 #include "timer.h"
 #include "manual.h"

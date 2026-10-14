@@ -11,6 +11,7 @@
 #include <fstream>
 #include <random>
 
+#include "nustatymai.h"
 #include "studentas.h"
 #include "utils.h"
 

@@ -7,12 +7,8 @@
 #include <string>
 #include <vector>
 
-enum class Rusiuoti { Varda, Pavarde, Pazymi };
-enum class Struktura { Vector, List };
-enum class Rezimas { Ranka, Failas, Generavimas, Benchmark };
-enum class Statistika { Mediana, Vidurkis, Abu };
-enum class Isvedimas { Konsole, Failas };
-enum class Tvarka {Didejimo, Mazejimo};
+#include "nustatymai.h"
+
 constexpr double ISLAIKYMO_RIBA = 5.0;
 
 struct Studentas {
