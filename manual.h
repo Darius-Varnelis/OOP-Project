@@ -14,10 +14,18 @@
 #include "nustatymai.h"
 #include "studentas.h"
 #include "utils.h"
+#include "failai.h"
 
 namespace pagalba {
 void rasytiAntraste(std::ostream& out, Statistika statistika);
 void rasytiStudenta(std::ostream& out, const Studentas& st, Statistika statistika);
+template <typename Konteineris>
+void rasytiGrupe(std::ostream& out, Konteineris& grupe, Statistika statistika) {
+    rasytiAntraste(out, statistika);
+        for (Studentas& st : grupe) {
+        rasytiStudenta(out, st, statistika);
+    }
+}
 }
 // Skaičiaus įvedimas per konsolę
 int ivestiSk(const std::string& klausimas, int nuo, int iki);
@@ -79,15 +87,21 @@ void ivestiRanka(bool zinomas_sk, Statistika statistika, Rezimas rezimas, std::o
         } else {
             st.exam = ivestiSk("Įveskite egzamino rezultatą: ", MIN_PAZ, MAX_PAZ);
         }
-        skaiciuotiGalutini(st);
         std::cout << "Įvesto studento adresas atmintyje: " << &st << "\n";
+        skaiciuotiGalutini(st);
         grupe.push_back(st);
     }
-    rusiuotiStudentus(grupe, rusiuoti, tvarka);
-    pagalba::rasytiAntraste(output, statistika);
+    pagalba::rasytiGrupe(output, grupe, statistika);
+}
+template <typename Konteineris>
+void nuskaitytiIsFailo(const std::string& filename, Statistika statistika, std::ostream& output, Rusiuoti rusiuoti, Tvarka tvarka) {
+    Konteineris grupe;
+    nuskaitytiStudentus(grupe, filename);
     for (Studentas& st : grupe) {
-        pagalba::rasytiStudenta(output, st, statistika);
+        skaiciuotiGalutini(st);
     }
+    rusiuotiStudentus(grupe,rusiuoti,tvarka);
+    pagalba::rasytiGrupe(output,grupe,statistika);
 }
 
 int nustatymai(const std::string& klausimas, const std::string& pasirinkimai);

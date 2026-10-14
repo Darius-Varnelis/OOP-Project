@@ -70,15 +70,16 @@ int main() {
 
     auto struktura = static_cast<Struktura>(nustatymai("Į kokią C++ struktūrą vesti studentus?", "Vector;List"));
     auto isvedimas = static_cast<Isvedimas>(nustatymai("Kur išvesti studentų duomenis?", "Į konsolę;Į failą"));
+    auto statistika =
+    static_cast<Statistika>(nustatymai("Kokios statistikos pageidaujate?", "Vidurkio;Medianos;Abiejų"));
     bool arZinomasSk;
-    if (rezimas == Rezimas::Benchmark) {
+    if (rezimas == Rezimas::Ranka) {
         arZinomasSk = taipArNe("Ar žinomas namų darbų skaičius?");
     } else {
         arZinomasSk = true;
     }
-    if ((rezimas == Rezimas::Ranka or rezimas == Rezimas::Generavimas) and rezimas != Rezimas::Benchmark) {
-        auto statistika =
-            static_cast<Statistika>(nustatymai("Kokios statistikos pageidaujate?", "Vidurkio;Medianos;Abiejų"));
+    if (rezimas == Rezimas::Ranka or rezimas == Rezimas::Generavimas) {
+
         if (isvedimas == Isvedimas::Konsole) {
             if (struktura == Struktura::List) {
                 ivestiRanka<std::list<Studentas>>(arZinomasSk, statistika, rezimas, std::cout, rusiuoti, tvarka);
@@ -99,6 +100,34 @@ int main() {
                 ivestiRanka<std::list<Studentas>>(arZinomasSk, statistika, rezimas, failas, rusiuoti, tvarka);
             } else {
                 ivestiRanka<std::vector<Studentas>>(arZinomasSk, statistika, rezimas, failas, rusiuoti, tvarka);
+            }
+        }
+
+    }
+    else {
+        std::string failoPavadinimas;
+        std::cout << "Įveskite failo pavadinimą nuskaitymui: ";
+        std::cin >> failoPavadinimas;
+        if (isvedimas == Isvedimas::Konsole) {
+            if (struktura == Struktura::Vector) {
+                nuskaitytiIsFailo<std::vector<Studentas>>(failoPavadinimas + ".txt",statistika,std::cout, rusiuoti, tvarka);
+            } else {
+                nuskaitytiIsFailo<std::list<Studentas>>(failoPavadinimas + ".txt",statistika,std::cout, rusiuoti, tvarka);
+            }
+        }
+        else {
+            std::string outputPavadinimas;
+            std::cout << "Įveskite išvesties failo pavadinimą: ";
+            std::cin >> outputPavadinimas;
+            std::ofstream failas(outputPavadinimas + ".txt");
+            if (!failas) {
+                std::cout << "Nepavyko atidaryti failo!\n";
+                return 0;
+            }
+            if (struktura == Struktura::Vector) {
+                nuskaitytiIsFailo<std::vector<Studentas>>(failoPavadinimas + ".txt",statistika,failas, rusiuoti, tvarka);
+            } else {
+                nuskaitytiIsFailo<std::list<Studentas>>(failoPavadinimas + ".txt",statistika,failas, rusiuoti, tvarka);
             }
         }
     }
