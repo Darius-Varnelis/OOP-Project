@@ -91,6 +91,7 @@ void ivestiRanka(bool zinomas_sk, Statistika statistika, Rezimas rezimas, std::o
         skaiciuotiGalutini(st);
         grupe.push_back(st);
     }
+    rusiuotiStudentus(grupe,rusiuoti,tvarka);
     pagalba::rasytiGrupe(output, grupe, statistika);
 }
 template <typename Konteineris>

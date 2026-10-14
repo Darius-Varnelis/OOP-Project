@@ -109,10 +109,15 @@ int main() {
         std::cout << "Įveskite failo pavadinimą nuskaitymui: ";
         std::cin >> failoPavadinimas;
         if (isvedimas == Isvedimas::Konsole) {
-            if (struktura == Struktura::Vector) {
-                nuskaitytiIsFailo<std::vector<Studentas>>(failoPavadinimas + ".txt",statistika,std::cout, rusiuoti, tvarka);
-            } else {
-                nuskaitytiIsFailo<std::list<Studentas>>(failoPavadinimas + ".txt",statistika,std::cout, rusiuoti, tvarka);
+            try {
+                if (struktura == Struktura::Vector) {
+                    nuskaitytiIsFailo<std::vector<Studentas>>(failoPavadinimas + ".txt",statistika,std::cout, rusiuoti, tvarka);
+                } else {
+                    nuskaitytiIsFailo<std::list<Studentas>>(failoPavadinimas + ".txt",statistika,std::cout, rusiuoti, tvarka);
+                }
+            }
+            catch (std::exception& e) {
+                std::cout << "Failo nepavyko atdaryti: "<<e.what() << '\n';
             }
         }
         else {
@@ -124,10 +129,15 @@ int main() {
                 std::cout << "Nepavyko atidaryti failo!\n";
                 return 0;
             }
-            if (struktura == Struktura::Vector) {
-                nuskaitytiIsFailo<std::vector<Studentas>>(failoPavadinimas + ".txt",statistika,failas, rusiuoti, tvarka);
-            } else {
-                nuskaitytiIsFailo<std::list<Studentas>>(failoPavadinimas + ".txt",statistika,failas, rusiuoti, tvarka);
+            try {
+                if (struktura == Struktura::Vector) {
+                    nuskaitytiIsFailo<std::vector<Studentas>>(failoPavadinimas + ".txt",statistika,failas, rusiuoti, tvarka);
+                } else {
+                    nuskaitytiIsFailo<std::list<Studentas>>(failoPavadinimas + ".txt",statistika,failas, rusiuoti, tvarka);
+                }
+            }
+            catch (std::exception& e) {
+                std::cout << "Failo nepavyko atdaryti: "<<e.what() << '\n';
             }
         }
     }
