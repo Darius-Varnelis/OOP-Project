@@ -17,5 +17,7 @@ add_executable(OOP_Project
         results.h
         manual.cpp
         manual.h
-        enums.h
+        nustatymai.h
+        testai.cpp
+        testai.h
 )
