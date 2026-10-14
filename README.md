@@ -16,7 +16,10 @@ The program reads and writes data files in its working directory, so run it from
 
 ## Usage
 Upon running the compiled program, the user will be prompted with several options to decide the behavior of the program. 
+
 ![](images/Screenshot_Options.png)
+
+The following formula is used for final grade calculation:
 ```math
 Final grade = 0.4 \cdot average\space or\space median + 0.6 \cdot exam
 ```
@@ -98,4 +101,5 @@ In short, List's strengths (easy insertion and removal in the middle) are not us
 
 ## Disclaimer
 The generation of the text files is likely to take a large amount of time (about 30 seconds) as well as a large amount of storage (about 1GB). Further processing of the files (5 runs for every file) takes about 6 minutes on the release build and about 15 minutes on the debug build.
+
 ![](images/Screenshot_Sizes.png)
