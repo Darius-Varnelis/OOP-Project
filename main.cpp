@@ -16,8 +16,8 @@
 #include "manual.h"
 #include "results.h"
 template <typename Konteineris>
-void testas(int i, int j, const std::string& pavadinimas, Rezultatai& rezultatai, Rusiuoti rusiuoti);
-Rezultatai testuPaleistuvas(int i, const Struktura& struktura, const Rusiuoti& rusiuoti);
+void testas(int i, int j, const std::string& pavadinimas, Rezultatai& rezultatai, Rusiuoti rusiuoti, Tvarka tvarka);
+Rezultatai testuPaleistuvas(int i, const Struktura& struktura, const Rusiuoti& rusiuoti, const Tvarka& tvarka);
 constexpr int KARTAI = 5;
 int main() {
 #ifdef _WIN32
@@ -31,6 +31,8 @@ int main() {
         "Studentų įvedimas ranka;Studentų nuskaitymas iš failo;Automatinis generavimas;Programos greitumo testavimas"));
     auto rusiuoti =
         static_cast<Rusiuoti>(nustatymai("Pagal ką rūšiuoti išvesties failus?", "Vardą;Pavardę;Galutinį balą"));
+    auto tvarka =
+        static_cast<Tvarka>(nustatymai("Kokia tvarka rūšiuoti išvesties failus?", "Didėjimo;Mažėjimo"));
 
     if (rezimas == Rezimas::Benchmark) {
         constexpr int MAXFAILAS = 10000000;
@@ -48,7 +50,7 @@ int main() {
         std::cout << "Atliekami testai su Vector struktūra.\n";
         for (int i = MINFAILAS; i <= MAXFAILAS; i *= 10) {
 
-            Rezultatai rezultatai = testuPaleistuvas(i, Struktura::Vector, rusiuoti);
+            Rezultatai rezultatai = testuPaleistuvas(i, Struktura::Vector, rusiuoti, tvarka);
             visi.push_back(rezultatai);
         }
         std::string lentele = "lenteleVector.txt";
@@ -57,7 +59,7 @@ int main() {
         std::cout << "Atliekami testai su List struktūra.\n";
         for (int i = MINFAILAS; i <= MAXFAILAS; i *= 10) {
 
-            Rezultatai rezultatai = testuPaleistuvas(i, Struktura::List, rusiuoti);
+            Rezultatai rezultatai = testuPaleistuvas(i, Struktura::List, rusiuoti, tvarka);
             visi.push_back(rezultatai);
         }
         lentele = "lenteleList.txt";
@@ -80,9 +82,9 @@ int main() {
             static_cast<Statistika>(nustatymai("Kokios statistikos pageidaujate?", "Vidurkio;Medianos;Abiejų"));
         if (isvedimas == Isvedimas::Konsole) {
             if (struktura == Struktura::List) {
-                ivestiRanka<std::list<Studentas>>(arZinomasSk, statistika, rezimas, std::cout, rusiuoti);
+                ivestiRanka<std::list<Studentas>>(arZinomasSk, statistika, rezimas, std::cout, rusiuoti, tvarka);
             } else {
-                ivestiRanka<std::vector<Studentas>>(arZinomasSk, statistika, rezimas, std::cout, rusiuoti);
+                ivestiRanka<std::vector<Studentas>>(arZinomasSk, statistika, rezimas, std::cout, rusiuoti, tvarka);
             }
         } else {
             std::string failoPavadinimas;
@@ -95,15 +97,15 @@ int main() {
                 return 0;
             }
             if (struktura == Struktura::List) {
-                ivestiRanka<std::list<Studentas>>(arZinomasSk, statistika, rezimas, failas, rusiuoti);
+                ivestiRanka<std::list<Studentas>>(arZinomasSk, statistika, rezimas, failas, rusiuoti, tvarka);
             } else {
-                ivestiRanka<std::vector<Studentas>>(arZinomasSk, statistika, rezimas, failas, rusiuoti);
+                ivestiRanka<std::vector<Studentas>>(arZinomasSk, statistika, rezimas, failas, rusiuoti, tvarka);
             }
         }
     }
 }
 template <typename Konteineris>
-void testas(int i, int j, const std::string& pavadinimas, Rezultatai& rezultatai, Rusiuoti rusiuoti) {
+void testas(int i, int j, const std::string& pavadinimas, Rezultatai& rezultatai, Rusiuoti rusiuoti, Tvarka tvarka) {
     Konteineris grupe;
     Timer apdorojimas;
     Timer t;
@@ -120,7 +122,7 @@ void testas(int i, int j, const std::string& pavadinimas, Rezultatai& rezultatai
 
     t.reset();
 
-    rusiuotiStudentus(grupe, rusiuoti);
+    rusiuotiStudentus(grupe, rusiuoti, tvarka);
     rezultatai.rusiavimai.push_back(t.elapsed());
     std::cout << "  Rūšiavimas: " << rezultatai.rusiavimai[j] << " s\n";
 
@@ -144,7 +146,7 @@ void testas(int i, int j, const std::string& pavadinimas, Rezultatai& rezultatai
     std::cout << "  Viso apdorojimas: " << rezultatai.bendri[j] << " s\n\n";
 }
 
-Rezultatai testuPaleistuvas(int i, const Struktura& struktura, const Rusiuoti& rusiuoti) {
+Rezultatai testuPaleistuvas(int i, const Struktura& struktura, const Rusiuoti& rusiuoti, const Tvarka& tvarka) {
     Rezultatai rezultatai;
     rezultatai.dydis = i;
     std::string fileName = failoPavadinimas("kursiokai", i);
@@ -152,9 +154,9 @@ Rezultatai testuPaleistuvas(int i, const Struktura& struktura, const Rusiuoti& r
     for (int j = 0; j < KARTAI; j++) {
         std::cout << j + 1 << "-oji iteracija\n";
         if (struktura == Struktura::Vector) {
-            testas<std::vector<Studentas>>(i, j, fileName, rezultatai, rusiuoti);
+            testas<std::vector<Studentas>>(i, j, fileName, rezultatai, rusiuoti, tvarka);
         } else {
-            testas<std::list<Studentas>>(i, j, fileName, rezultatai, rusiuoti);
+            testas<std::list<Studentas>>(i, j, fileName, rezultatai, rusiuoti, tvarka);
         }
     }
     return rezultatai;

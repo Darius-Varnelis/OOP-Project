@@ -12,6 +12,7 @@ enum class Struktura { Vector, List };
 enum class Rezimas { Ranka, Failas, Generavimas, Benchmark };
 enum class Statistika { Mediana, Vidurkis, Abu };
 enum class Isvedimas { Konsole, Failas };
+enum class Tvarka {Didejimo, Mazejimo};
 constexpr double ISLAIKYMO_RIBA = 5.0;
 
 struct Studentas {
@@ -23,17 +24,17 @@ struct Studentas {
 
 void skaiciuotiGalutini(Studentas& st);
 template <typename Konteineris>
-void rusiuotiStudentus(Konteineris& grupe, Rusiuoti r) {
-    auto cmp = [r](const Studentas& a, const Studentas& b) {
+void rusiuotiStudentus(Konteineris& grupe, Rusiuoti r, Tvarka t) {
+    auto maziau = [r](const Studentas& a, const Studentas& b) {
         switch (r) {
-            case Rusiuoti::Varda:
-                return a.vardas < b.vardas;
-            case Rusiuoti::Pavarde:
-                return a.pavarde < b.pavarde;
-            case Rusiuoti::Pazymi:
-                return a.galutinis < b.galutinis;
+            case Rusiuoti::Varda:   return a.vardas < b.vardas;
+            case Rusiuoti::Pavarde: return a.pavarde < b.pavarde;
+            case Rusiuoti::Pazymi:  return a.galutinis < b.galutinis;
         }
         return false;
+    };
+    auto cmp = [maziau, t](const Studentas& a, const Studentas& b) {
+        return t == Tvarka::Didejimo ? maziau(a, b) : maziau(b, a);
     };
     if constexpr (std::is_same_v<Konteineris, std::list<Studentas>>) {
         grupe.sort(cmp);

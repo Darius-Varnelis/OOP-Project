@@ -25,7 +25,7 @@ int ivestiSk(const std::string& klausimas, int nuo, int iki);
 bool taipArNe(const std::string& klausimas);
 bool iSkaiciu(const std::string& tekstas, int& rezultatas);
 template <typename Konteineris>
-void ivestiRanka(bool zinomas_sk, Statistika statistika, Rezimas rezimas, std::ostream& output, Rusiuoti rusiuoti) {
+void ivestiRanka(bool zinomas_sk, Statistika statistika, Rezimas rezimas, std::ostream& output, Rusiuoti rusiuoti, Tvarka tvarka) {
     const auto seed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
     std::mt19937 gen(static_cast<std::mt19937::result_type>(seed));
     std::uniform_int_distribution<int> pazymiu_dist(MIN_PAZ, MAX_PAZ);
@@ -81,7 +81,7 @@ void ivestiRanka(bool zinomas_sk, Statistika statistika, Rezimas rezimas, std::o
         skaiciuotiGalutini(st);
         std::cout << "Įvesto studento adresas atmintyje: " << &st << "\n";
         grupe.push_back(st);
-        rusiuotiStudentus(grupe, rusiuoti);
+        rusiuotiStudentus(grupe, rusiuoti, tvarka);
     }
     pagalba::rasytiAntraste(output, statistika);
     for (Studentas& st : grupe) {
