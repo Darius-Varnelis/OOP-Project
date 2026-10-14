@@ -17,9 +17,6 @@
 #include "manual.h"
 #include "results.h"
 #include "testai.h"
-template <typename Konteineris>
-void testas(int i, int j, const std::string& pavadinimas, Rezultatai& rezultatai, Rusiuoti rusiuoti, Tvarka tvarka);
-Rezultatai testuPaleistuvas(int i, const Struktura& struktura, const Rusiuoti& rusiuoti, const Tvarka& tvarka);
 
 int main() {
 #ifdef _WIN32

@@ -98,5 +98,5 @@ int nustatymai(const string& klausimas, const string& pasirinkimai) {
         std::cout << "[" << i << "] - " << pasirinkimas << '\n';
         i++;
     }
-    return ivestiSk("Įveskite savo pasirinkimą (nuo 0 iki " + std::to_string(i - 1) + "): ", 0, i);
+    return ivestiSk("Įveskite savo pasirinkimą (nuo 0 iki " + std::to_string(i - 1) + "): ", 0, i - 1);
 }

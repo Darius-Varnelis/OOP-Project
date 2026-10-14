@@ -82,8 +82,8 @@ void ivestiRanka(bool zinomas_sk, Statistika statistika, Rezimas rezimas, std::o
         skaiciuotiGalutini(st);
         std::cout << "Įvesto studento adresas atmintyje: " << &st << "\n";
         grupe.push_back(st);
-        rusiuotiStudentus(grupe, rusiuoti, tvarka);
     }
+    rusiuotiStudentus(grupe, rusiuoti, tvarka);
     pagalba::rasytiAntraste(output, statistika);
     for (Studentas& st : grupe) {
         pagalba::rasytiStudenta(output, st, statistika);
