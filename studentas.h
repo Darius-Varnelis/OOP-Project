@@ -45,10 +45,29 @@ void rusiuotiStudentus(Konteineris<Studentas<Konteineris>>& grupe, Rusiuoti r, T
 }
 
 template <template <typename...> class Konteineris>
-void skirstytiStudentus(Konteineris<Studentas<Konteineris>>& grupe, Konteineris<Studentas<Konteineris>>& nuskriaustukai,
+void skirstytiStudentusMano(Konteineris<Studentas<Konteineris>>& grupe, Konteineris<Studentas<Konteineris>>& nuskriaustukai,
                         Konteineris<Studentas<Konteineris>>& kietukai) {
     for (auto& st : grupe) {
         (st.galutinis < ISLAIKYMO_RIBA ? nuskriaustukai : kietukai).push_back(std::move(st));
+    }
+}
+template <template <typename...> class Konteineris>
+void skirstytiStudentus1 (Konteineris<Studentas<Konteineris>>& grupe, Konteineris<Studentas<Konteineris>>& nuskriaustukai,
+                        Konteineris<Studentas<Konteineris>>& kietukai) {
+    for (auto& st : grupe) {
+        (st.galutinis < ISLAIKYMO_RIBA ? nuskriaustukai : kietukai).push_back(st);
+    }
+}
+template <template <typename...> class Konteineris>
+void skirstytiStudentus2(Konteineris<Studentas<Konteineris>>& grupe,
+                         Konteineris<Studentas<Konteineris>>& nuskriaustukai) {
+    for (auto it = grupe.begin(); it != grupe.end(); ) {
+        if (it->galutinis < ISLAIKYMO_RIBA) {
+            nuskriaustukai.push_back(std::move(*it));
+            it = grupe.erase(it);
+        } else {
+            ++it;
+        }
     }
 }
 

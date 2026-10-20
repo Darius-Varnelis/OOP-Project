@@ -32,12 +32,46 @@ void testas(int i, int j, const std::string& pavadinimas, Rezultatai& rezultatai
     rezultatai.rusiavimai.push_back(t.elapsed());
     std::cout << "  Rūšiavimas: " << rezultatai.rusiavimai[j] << " s\n";
 
-    t.reset();
+
+    auto kopija = grupe;
     Konteineris<Studentas<Konteineris>> nuskriaustukai, kietukai;
-    skirstytiStudentus(grupe, nuskriaustukai, kietukai);
+    t.reset();
+    skirstytiStudentusMano(grupe, nuskriaustukai, kietukai);
     grupe.clear();
-    rezultatai.dalijimai.push_back(t.elapsed());
-    std::cout << "  Dalijimas į dvi grupes: " << rezultatai.dalijimai[j] << " s\n";
+    rezultatai.dalijimaiMano.push_back(t.elapsed());
+    std::cout << "  Dalijimas į dvi grupes mano metodu: " << rezultatai.dalijimaiMano[j] << " s\n";
+
+    grupe = kopija;
+    nuskriaustukai.clear();
+    kietukai.clear();
+    t.reset();
+    skirstytiStudentus1(grupe, nuskriaustukai, kietukai);
+    grupe.clear();
+    rezultatai.dalijimai1.push_back(t.elapsed());
+    std::cout <<"  Dalijimas į dvi grupes pirmu metodu: " << rezultatai.dalijimai1[j] << " s\n";
+
+    if constexpr (std::is_same_v<Konteineris<int>, std::vector<int>>) {
+        if (i <= 10000) {
+            kietukai = kopija;
+            nuskriaustukai.clear();
+            skirstytiStudentus2(kietukai, nuskriaustukai);
+            rezultatai.dalijimai2.push_back(t.elapsed());
+            std::cout << "  Dalijimas į dvi grupes antru metodu: " << rezultatai.dalijimai2[j] << " s\n";
+        }
+        else {
+            rezultatai.dalijimai2.push_back(0);
+            std::cout << "  Į dvi grupes antru metodu nedalinta.\n ";
+        }
+    }
+    else {
+        kietukai = kopija;
+        nuskriaustukai.clear();
+        skirstytiStudentus2(kietukai, nuskriaustukai);
+        rezultatai.dalijimai2.push_back(t.elapsed());
+        std::cout << "  Dalijimas į dvi grupes antru metodu: " << rezultatai.dalijimai2[j] << " s\n";
+    }
+
+
 
     t.reset();
     isvestiStudentus(nuskriaustukai, failoPavadinimas("nuskriaustukai", i));
