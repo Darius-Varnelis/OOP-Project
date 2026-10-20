@@ -10,9 +10,9 @@
 #include "studentas.h"
 #include "timer.h"
 
-template <typename Konteineris>
+template <template <typename...> class Konteineris>
 void testas(int i, int j, const std::string& pavadinimas, Rezultatai& rezultatai, Rusiuoti rusiuoti, Tvarka tvarka) {
-    Konteineris grupe;
+    Konteineris<Studentas<Konteineris>> grupe;
     Timer apdorojimas;
     Timer t;
     nuskaitytiStudentus(grupe, pavadinimas);
@@ -20,7 +20,7 @@ void testas(int i, int j, const std::string& pavadinimas, Rezultatai& rezultatai
     std::cout << "  Nuskaitymas: " << rezultatai.nuskaitymai[j] << " s\n";
 
     t.reset();
-    for (Studentas& st : grupe) {
+    for (auto& st : grupe) {
         skaiciuotiGalutini(st);
     }
     rezultatai.galutiniai.push_back(t.elapsed());
@@ -33,7 +33,7 @@ void testas(int i, int j, const std::string& pavadinimas, Rezultatai& rezultatai
     std::cout << "  Rūšiavimas: " << rezultatai.rusiavimai[j] << " s\n";
 
     t.reset();
-    Konteineris nuskriaustukai, kietukai;
+    Konteineris<Studentas<Konteineris>> nuskriaustukai, kietukai;
     skirstytiStudentus(grupe, nuskriaustukai, kietukai);
     grupe.clear();
     rezultatai.dalijimai.push_back(t.elapsed());

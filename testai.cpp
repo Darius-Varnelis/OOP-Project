@@ -8,11 +8,10 @@ Rezultatai testuPaleistuvas(int i, const Struktura& struktura, const Rusiuoti& r
     for (int j = 0; j < KARTAI; j++) {
         std::cout << j + 1 << "-oji iteracija\n";
         if (struktura == Struktura::Vector) {
-            testas<std::vector<Studentas>>(i, j, fileName, rezultatai, rusiuoti, tvarka);
+            testas<std::vector>(i, j, fileName, rezultatai, rusiuoti, tvarka);
         } else {
-            testas<std::list<Studentas>>(i, j, fileName, rezultatai, rusiuoti, tvarka);
+            testas<std::list>(i, j, fileName, rezultatai, rusiuoti, tvarka);
         }
     }
     return rezultatai;
 }
-#include "testai.h"

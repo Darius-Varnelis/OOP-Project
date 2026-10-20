@@ -10,7 +10,6 @@ endif()
 
 add_executable(OOP_Project
         main.cpp
-        studentas.cpp
         failai.cpp
         utils.cpp
         results.cpp

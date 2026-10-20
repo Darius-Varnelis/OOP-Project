@@ -9,6 +9,7 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <limits>
 #include <random>
 
 #include "nustatymai.h"
@@ -18,11 +19,24 @@
 
 namespace pagalba {
 void rasytiAntraste(std::ostream& out, Statistika statistika);
-void rasytiStudenta(std::ostream& out, const Studentas& st, Statistika statistika);
-template <typename Konteineris>
-void rasytiGrupe(std::ostream& out, Konteineris& grupe, Statistika statistika) {
+template <template <typename...> class Konteineris>
+void rasytiStudenta(std::ostream& out, const Studentas<Konteineris>& st, Statistika statistika) {
+    out << std::left << std::setw(utf8Plotis(st.vardas)) << st.vardas << "|";
+    out << std::setw(utf8Plotis(st.pavarde)) << st.pavarde << "|";
+    if (statistika == Statistika::Vidurkis) {
+        out << std::setw(PLOTIS) << std::fixed << std::setprecision(2) << st.galutinis << "|\n";
+    } else if (statistika == Statistika::Mediana) {
+        out << std::setw(PLOTIS) << std::fixed << std::setprecision(2) << 0.4 * mediana(st.paz) + 0.6 * st.exam
+            << "|\n";
+    } else if (statistika == Statistika::Abu) {
+        out << std::setw(PLOTIS) << std::fixed << std::setprecision(2) << st.galutinis << "|" << std::setw(PLOTIS)
+            << 0.4 * mediana(st.paz) + 0.6 * st.exam << "|\n";
+    }
+}
+template <template <typename...> class Konteineris>
+void rasytiGrupe(std::ostream& out, const Konteineris<Studentas<Konteineris>>& grupe, Statistika statistika) {
     rasytiAntraste(out, statistika);
-        for (Studentas& st : grupe) {
+    for (const auto& st : grupe) {
         rasytiStudenta(out, st, statistika);
     }
 }
@@ -33,15 +47,15 @@ int ivestiSk(const std::string& klausimas, int nuo, int iki);
 // Funkcija, gražinanti loginę reikšmę taip ar ne klausimui
 bool taipArNe(const std::string& klausimas);
 bool iSkaiciu(const std::string& tekstas, int& rezultatas);
-template <typename Konteineris>
+template <template <typename...> class Konteineris>
 void ivestiRanka(bool zinomas_sk, Statistika statistika, Rezimas rezimas, std::ostream& output, Rusiuoti rusiuoti, Tvarka tvarka) {
     const auto seed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
     std::mt19937 gen(static_cast<std::mt19937::result_type>(seed));
     std::uniform_int_distribution<int> pazymiu_dist(MIN_PAZ, MAX_PAZ);
-    Konteineris grupe;
+    Konteineris<Studentas<Konteineris>> grupe;
     const int studkiekis = ivestiSk("Kiek yra studentų? ", 0, BE_RIBOS);
     for (int i = 0; i < studkiekis; i++) {
-        Studentas st;
+        Studentas<Konteineris> st;
 
         std::cout << "Įveskite vardą: ";
         std::cin >> st.vardas;
@@ -95,11 +109,11 @@ void ivestiRanka(bool zinomas_sk, Statistika statistika, Rezimas rezimas, std::o
     rusiuotiStudentus(grupe,rusiuoti,tvarka);
     pagalba::rasytiGrupe(output, grupe, statistika);
 }
-template <typename Konteineris>
+template <template <typename...> class Konteineris>
 void nuskaitytiIsFailo(const std::string& filename, Statistika statistika, std::ostream& output, Rusiuoti rusiuoti, Tvarka tvarka) {
-    Konteineris grupe;
+    Konteineris<Studentas<Konteineris>> grupe;
     nuskaitytiStudentus(grupe, filename);
-    for (Studentas& st : grupe) {
+    for (auto& st : grupe) {
         skaiciuotiGalutini(st);
     }
     rusiuotiStudentus(grupe,rusiuoti,tvarka);

@@ -95,9 +95,9 @@ int main() {
 
         if (isvedimas == Isvedimas::Konsole) {
             if (struktura == Struktura::List) {
-                ivestiRanka<std::list<Studentas>>(arZinomasSk, statistika, rezimas, std::cout, rusiuoti, tvarka);
+                ivestiRanka<std::list>(arZinomasSk, statistika, rezimas, std::cout, rusiuoti, tvarka);
             } else {
-                ivestiRanka<std::vector<Studentas>>(arZinomasSk, statistika, rezimas, std::cout, rusiuoti, tvarka);
+                ivestiRanka<std::vector>(arZinomasSk, statistika, rezimas, std::cout, rusiuoti, tvarka);
             }
         } else {
             std::string failoPavadinimas;
@@ -110,9 +110,9 @@ int main() {
                 return 0;
             }
             if (struktura == Struktura::List) {
-                ivestiRanka<std::list<Studentas>>(arZinomasSk, statistika, rezimas, failas, rusiuoti, tvarka);
+                ivestiRanka<std::list>(arZinomasSk, statistika, rezimas, failas, rusiuoti, tvarka);
             } else {
-                ivestiRanka<std::vector<Studentas>>(arZinomasSk, statistika, rezimas, failas, rusiuoti, tvarka);
+                ivestiRanka<std::vector>(arZinomasSk, statistika, rezimas, failas, rusiuoti, tvarka);
             }
         }
 
@@ -124,9 +124,9 @@ int main() {
         if (isvedimas == Isvedimas::Konsole) {
             try {
                 if (struktura == Struktura::Vector) {
-                    nuskaitytiIsFailo<std::vector<Studentas>>(failoPavadinimas + ".txt",statistika,std::cout, rusiuoti, tvarka);
+                    nuskaitytiIsFailo<std::vector>(failoPavadinimas + ".txt",statistika,std::cout, rusiuoti, tvarka);
                 } else {
-                    nuskaitytiIsFailo<std::list<Studentas>>(failoPavadinimas + ".txt",statistika,std::cout, rusiuoti, tvarka);
+                    nuskaitytiIsFailo<std::list>(failoPavadinimas + ".txt",statistika,std::cout, rusiuoti, tvarka);
                 }
             }
             catch (std::exception& e) {
@@ -144,9 +144,9 @@ int main() {
             }
             try {
                 if (struktura == Struktura::Vector) {
-                    nuskaitytiIsFailo<std::vector<Studentas>>(failoPavadinimas + ".txt",statistika,failas, rusiuoti, tvarka);
+                    nuskaitytiIsFailo<std::vector>(failoPavadinimas + ".txt",statistika,failas, rusiuoti, tvarka);
                 } else {
-                    nuskaitytiIsFailo<std::list<Studentas>>(failoPavadinimas + ".txt",statistika,failas, rusiuoti, tvarka);
+                    nuskaitytiIsFailo<std::list>(failoPavadinimas + ".txt",statistika,failas, rusiuoti, tvarka);
                 }
             }
             catch (std::exception& e) {

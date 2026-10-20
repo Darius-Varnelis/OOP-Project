@@ -8,18 +8,25 @@
 #include <fstream>
 #include <sstream>
 #include <stdexcept>
+#include <type_traits>
 
 #include "studentas.h"
+#include "utils.h"
 
 std::string failoPavadinimas(const std::string& pradzia, const int& n);
 
 void generuotiFaila(const int& n);
 void rasytiAntraste(std::ostream& out);
-void rasytiStudenta(std::ostream& out, const Studentas& st);
+template <template <typename...> class Konteineris>
+void rasytiStudenta(std::ostream& out, const Studentas<Konteineris>& st) {
+    out << std::left << std::setw(utf8Plotis(st.vardas)) << st.vardas << "|";
+    out << std::setw(utf8Plotis(st.pavarde)) << st.pavarde << "|";
+    out << std::left << std::setw(PLOTIS) << st.galutinis << "|\n";
+}
 void trintiFaila(const std::string& fileName) ;
 
-template <typename Konteineris>
-void nuskaitytiStudentus(Konteineris& grupe, const std::string& filename) {
+template <template <typename...> class Konteineris>
+void nuskaitytiStudentus(Konteineris<Studentas<Konteineris>>& grupe, const std::string& filename) {
     std::ifstream ins(filename);
     if (!ins) throw std::runtime_error("Nepavyko atidaryti failo " + filename);
 
@@ -33,10 +40,10 @@ void nuskaitytiStudentus(Konteineris& grupe, const std::string& filename) {
     const int pazKiekis = std::max(stulpeliu - 3, 0);  // minus Vardas, Pavardė, Egzaminas
 
     while (std::getline(ins, eilute)) {
-        Studentas st;
+        Studentas<Konteineris> st;
         std::istringstream duomenys(eilute);
         duomenys >> st.vardas >> st.pavarde;
-        st.paz.reserve(pazKiekis);
+        if constexpr (std::is_same_v<Konteineris<int>, std::vector<int>>) st.paz.reserve(pazKiekis);
         for (int i = 0; i < pazKiekis; i++) {
             int num;
             duomenys >> num;
@@ -47,13 +54,13 @@ void nuskaitytiStudentus(Konteineris& grupe, const std::string& filename) {
     }
 }
 
-template <typename Konteineris>
-void isvestiStudentus(const Konteineris& grupe, const std::string& filename) {
+template <template <typename...> class Konteineris>
+void isvestiStudentus(const Konteineris<Studentas<Konteineris>>& grupe, const std::string& filename) {
     std::ofstream out(filename);
     out << std::fixed << std::setprecision(2);
 
     rasytiAntraste(out);
-    for (const Studentas& st : grupe) {
+    for (const auto& st : grupe) {
         rasytiStudenta(out, st);
     }
 }

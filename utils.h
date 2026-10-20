@@ -6,9 +6,8 @@
 #include <list>
 #include <numeric>
 #include <string>
+#include <type_traits>
 #include <vector>
-
-#include "studentas.h"
 
 constexpr int MIN_PAZ = 0;
 constexpr int MAX_PAZ = 10;
@@ -22,9 +21,22 @@ size_t utf8Ilgis(const std::string& tekstas);
 int utf8Plotis(const std::string& tekstas);
 
 template <typename T>
-double vidurkis(const std::vector<T>& v) {
+double vidurkis(const T& v) {
     if (v.empty()) return 0.0;
     return std::accumulate(v.begin(), v.end(), 0.0) / v.size();
 }
-double mediana(std::vector<int> paz);
+template <typename T>
+double mediana(T paz) {
+    if (paz.empty()) return 0.0;
+
+    if constexpr (std::is_same_v<T, std::list<typename T::value_type>>)
+        paz.sort();
+    else
+        std::sort(paz.begin(), paz.end());
+
+    std::size_t n = paz.size();
+    auto mid = std::next(paz.begin(), n / 2);
+    if (n % 2 == 1) return *mid;
+    return (*std::prev(mid) + *mid) / 2.0;
+}
 #endif  // OOP_PROJECT_UTILS_H
