@@ -8,6 +8,7 @@
 #include <random>
 #include <sstream>
 #include <stdexcept>
+#include <filesystem>
 
 #include "utils.h"
 
@@ -74,4 +75,10 @@ bool arFailaiEgzistuoja(int min, int max) {
         }
     }
     return true;
+}
+
+void trintiFaila(const string& fileName) {
+    std::error_code ec;
+    if (!std::filesystem::remove(fileName, ec) && ec)
+        std::cerr << "Ištrinti nepavyko: " << ec.message() << '\n';
 }

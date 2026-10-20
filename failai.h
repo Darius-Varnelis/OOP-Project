@@ -16,6 +16,7 @@ std::string failoPavadinimas(const std::string& pradzia, const int& n);
 void generuotiFaila(const int& n);
 void rasytiAntraste(std::ostream& out);
 void rasytiStudenta(std::ostream& out, const Studentas& st);
+void trintiFaila(const std::string& fileName) ;
 
 template <typename Konteineris>
 void nuskaitytiStudentus(Konteineris& grupe, const std::string& filename) {

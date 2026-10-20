@@ -63,6 +63,19 @@ int main() {
         }
         lentele = "lenteleList.txt";
         spausdintiLentele(lentele, visi);
+        if (taipArNe("Ar trinti nuskriaustukų ir kietukų failus? ")) {
+            for (int i = MINFAILAS; i <= MAXFAILAS; i *= 10) {
+                trintiFaila(failoPavadinimas("nuskriaustukai",i));
+                trintiFaila(failoPavadinimas("kietukai",i));
+            }
+        }
+        if (taipArNe("Ar trinti kursiokų failus? ")) {
+            if (taipArNe("Ar tikrai???!!!")) {
+                for (int i = MINFAILAS; i <= MAXFAILAS; i *= 10) {
+                    trintiFaila(failoPavadinimas("kursiokai",i));
+                }
+            }
+        }
 
         return 0;
     }
