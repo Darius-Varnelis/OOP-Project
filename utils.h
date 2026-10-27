@@ -9,6 +9,7 @@
 #include <type_traits>
 #include <vector>
 
+
 constexpr int MIN_PAZ = 0;
 constexpr int MAX_PAZ = 10;
 constexpr int BE_RIBOS = std::numeric_limits<int>::max();
@@ -39,4 +40,6 @@ double mediana(T paz) {
     if (n % 2 == 1) return *mid;
     return (*std::prev(mid) + *mid) / 2.0;
 }
+
+
 #endif  // OOP_PROJECT_UTILS_H

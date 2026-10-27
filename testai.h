@@ -50,27 +50,21 @@ void testas(int i, int j, const std::string& pavadinimas, Rezultatai& rezultatai
     rezultatai.dalijimai1.push_back(t.elapsed());
     std::cout <<"  Dalijimas į dvi grupes pirmu metodu: " << rezultatai.dalijimai1[j] << " s\n";
 
-    if constexpr (std::is_same_v<Konteineris<int>, std::vector<int>>) {
-        if (i <= 10000000000) {
-            kietukai = kopija;
-            nuskriaustukai.clear();
-            skirstytiStudentus2(kietukai, nuskriaustukai);
-            rezultatai.dalijimai2.push_back(t.elapsed());
-            std::cout << "  Dalijimas į dvi grupes antru metodu: " << rezultatai.dalijimai2[j] << " s\n";
-        }
-        else {
-            rezultatai.dalijimai2.push_back(-1);
-            std::cout << "  Į dvi grupes antru metodu nedalinta.\n ";
-        }
-    }
-    else {
-        kietukai = kopija;
-        nuskriaustukai.clear();
-        skirstytiStudentus2(kietukai, nuskriaustukai);
-        rezultatai.dalijimai2.push_back(t.elapsed());
-        std::cout << "  Dalijimas į dvi grupes antru metodu: " << rezultatai.dalijimai2[j] << " s\n";
-    }
 
+    kietukai = kopija;
+    nuskriaustukai.clear();
+    skirstytiStudentus2(kietukai, nuskriaustukai);
+    rezultatai.dalijimai2.push_back(t.elapsed());
+    std::cout << "  Dalijimas į dvi grupes antru metodu: " << rezultatai.dalijimai2[j] << " s\n";
+
+    grupe = kopija;
+    nuskriaustukai.clear();
+    kietukai.clear();
+    t.reset();
+    skirstytiStudentus1(grupe, nuskriaustukai, kietukai);
+    grupe.clear();
+    rezultatai.dalijimai3.push_back(t.elapsed());
+    std::cout <<"  Dalijimas į dvi grupes patobulintu mano metodu: " << rezultatai.dalijimai3[j] << " s\n";
 
 
     t.reset();

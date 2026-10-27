@@ -13,6 +13,8 @@
 
 constexpr double ISLAIKYMO_RIBA = 5.0;
 
+
+
 template <template <typename...> class Konteineris>
 struct Studentas {
     std::string vardas, pavarde;
@@ -20,6 +22,8 @@ struct Studentas {
     int exam = 0;
     double galutinis = 0.0;
 };
+
+
 template <template <typename...> class Konteineris>
 void skaiciuotiGalutini(Studentas<Konteineris>& st) {
     st.galutinis = 0.4 * vidurkis(st.paz) + 0.6 * st.exam;
@@ -76,6 +80,21 @@ void skirstytiStudentus2(Konteineris<Studentas<Konteineris>>& grupe,
             ++it;
         }
     }
+}
+
+template <template <typename...> class Konteineris>
+void skirstytiStudentusPartition(Konteineris<Studentas<Konteineris>>& grupe,
+                                 Konteineris<Studentas<Konteineris>>& nuskriaustukai,
+                                 Konteineris<Studentas<Konteineris>>& kietukai) {
+    auto riba = std::stable_partition(grupe.begin(), grupe.end(),
+        [](const auto& st) { return st.galutinis >= ISLAIKYMO_RIBA; });
+
+    kietukai.insert(kietukai.end(),
+        std::make_move_iterator(grupe.begin()), std::make_move_iterator(riba));
+    nuskriaustukai.insert(nuskriaustukai.end(),
+        std::make_move_iterator(riba), std::make_move_iterator(grupe.end()));
+
+    grupe.clear();
 }
 
 #endif  // OOP_PROJECT_STUDENTAS_H
