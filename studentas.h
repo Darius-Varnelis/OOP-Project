@@ -97,4 +97,18 @@ void skirstytiStudentusPartition(Konteineris<Studentas<Konteineris>>& grupe,
     grupe.clear();
 }
 
+template <template <typename...> class Konteineris>
+void skirstytiStudentusCopyIf(Konteineris<Studentas<Konteineris>>& grupe,
+                              Konteineris<Studentas<Konteineris>>& nuskriaustukai) {
+    auto nepraejo = [](const Studentas<Konteineris>& st) {
+        return st.galutinis < ISLAIKYMO_RIBA;
+    };
+
+    std::copy_if(std::make_move_iterator(grupe.begin()),
+                 std::make_move_iterator(grupe.end()),
+                 std::back_inserter(nuskriaustukai), nepraejo);
+
+    grupe.erase(std::remove_if(grupe.begin(), grupe.end(), nepraejo), grupe.end());
+}
+
 #endif  // OOP_PROJECT_STUDENTAS_H

@@ -66,6 +66,12 @@ void testas(int i, int j, const std::string& pavadinimas, Rezultatai& rezultatai
     rezultatai.dalijimai3.push_back(t.elapsed());
     std::cout <<"  Dalijimas į dvi grupes patobulintu mano metodu: " << rezultatai.dalijimai3[j] << " s\n";
 
+    kietukai = kopija;
+    nuskriaustukai.clear();
+    skirstytiStudentusCopyIf(kietukai, nuskriaustukai);
+    rezultatai.dalijimai4.push_back(t.elapsed());
+    std::cout << "  Dalijimas į dvi grupes antru metodu: " << rezultatai.dalijimai4[j] << " s\n";
+
 
     t.reset();
     isvestiStudentus(nuskriaustukai, failoPavadinimas("nuskriaustukai", i));
