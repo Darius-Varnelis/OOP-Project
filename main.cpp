@@ -45,24 +45,20 @@ int main() {
             }
             std::cout << "Visų failų generavimas užtruko: " << visasGeneravimas.elapsed() << " s\n\n";
         }
-        std::vector<Rezultatai> visi;
-        std::cout << "Atliekami testai su Vector struktūra.\n";
+        std::vector<Rezultatai> visiVector;
+        std::vector<Rezultatai> visiList;
         for (int i = MINFAILAS; i <= MAXFAILAS; i *= 10) {
-
+            std::cout << "Atliekamas testas su Vector.\n";
             Rezultatai rezultatai = testuPaleistuvas(i, Struktura::Vector, rusiuoti, tvarka);
-            visi.push_back(rezultatai);
+            visiVector.push_back(rezultatai);
+            std::cout << "Atliekamas testas su List.\n";
+            rezultatai = testuPaleistuvas(i, Struktura::List, rusiuoti, tvarka);
+            visiList.push_back(rezultatai);
         }
         std::string lentele = "lenteleVector.txt";
-        spausdintiLentele(lentele, visi);
-        visi.clear();
-        std::cout << "Atliekami testai su List struktūra.\n";
-        for (int i = MINFAILAS; i <= MAXFAILAS; i *= 10) {
-
-            Rezultatai rezultatai = testuPaleistuvas(i, Struktura::List, rusiuoti, tvarka);
-            visi.push_back(rezultatai);
-        }
+        spausdintiLentele(lentele, visiVector);
         lentele = "lenteleList.txt";
-        spausdintiLentele(lentele, visi);
+        spausdintiLentele(lentele, visiList);
         if (taipArNe("Ar trinti nuskriaustukų ir kietukų failus? ")) {
             for (int i = MINFAILAS; i <= MAXFAILAS; i *= 10) {
                 trintiFaila(failoPavadinimas("nuskriaustukai",i));

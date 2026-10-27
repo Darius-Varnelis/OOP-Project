@@ -26,9 +26,14 @@ void eilute(std::ostream& out, const Rezultatai& rezultatai) {
         << vidurkis(rezultatai.galutiniai) << "s|"
         << vidurkis(rezultatai.rusiavimai) << "s|"
         << vidurkis(rezultatai.dalijimaiMano) << "s|"
-        << vidurkis(rezultatai.dalijimai1) << "s|"
-        << vidurkis(rezultatai.dalijimai2) << "s|"
-        << vidurkis(rezultatai.isvedimaiNuskriaustuku) << "s|"
+        << vidurkis(rezultatai.dalijimai1) << "s|";
+    if (rezultatai.dalijimai2[0] == -1) {
+        out << "-|";
+    }
+    else {
+        out << vidurkis(rezultatai.dalijimai2) << "s|";
+    }
+        out << vidurkis(rezultatai.isvedimaiNuskriaustuku) << "s|"
         << vidurkis(rezultatai.isvedimaiKietuku) << "s|"
         << vidurkis(rezultatai.bendri) << "s|\n";
 }

@@ -51,7 +51,7 @@ void testas(int i, int j, const std::string& pavadinimas, Rezultatai& rezultatai
     std::cout <<"  Dalijimas į dvi grupes pirmu metodu: " << rezultatai.dalijimai1[j] << " s\n";
 
     if constexpr (std::is_same_v<Konteineris<int>, std::vector<int>>) {
-        if (i <= 10000) {
+        if (i <= 10000000000) {
             kietukai = kopija;
             nuskriaustukai.clear();
             skirstytiStudentus2(kietukai, nuskriaustukai);
@@ -59,7 +59,7 @@ void testas(int i, int j, const std::string& pavadinimas, Rezultatai& rezultatai
             std::cout << "  Dalijimas į dvi grupes antru metodu: " << rezultatai.dalijimai2[j] << " s\n";
         }
         else {
-            rezultatai.dalijimai2.push_back(0);
+            rezultatai.dalijimai2.push_back(-1);
             std::cout << "  Į dvi grupes antru metodu nedalinta.\n ";
         }
     }

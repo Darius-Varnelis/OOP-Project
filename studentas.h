@@ -64,7 +64,14 @@ void skirstytiStudentus2(Konteineris<Studentas<Konteineris>>& grupe,
     for (auto it = grupe.begin(); it != grupe.end(); ) {
         if (it->galutinis < ISLAIKYMO_RIBA) {
             nuskriaustukai.push_back(std::move(*it));
-            it = grupe.erase(it);
+
+            if (std::next(it) == grupe.end()) {
+                grupe.pop_back();
+                break;
+            }
+            *it = std::move(grupe.back());
+            grupe.pop_back();
+
         } else {
             ++it;
         }
