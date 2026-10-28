@@ -1,4 +1,5 @@
 #include "testai.h"
+#include <cstdlib>
 #include "utils.h"
 #include "studentas.h"
 constexpr int KARTAI = 5;
@@ -60,8 +61,14 @@ void paleistiAtmintiesTestus(const std::string& exe) {
     for (const auto& f : failai)
         for (const auto& s : strategijos)
             for (int i = 0; i < KARTAI; ++i) {
+#ifdef _WIN32
+                // cmd.exe reikalauja papildomų kabučių aplink visą komandą
                 std::string cmd = "\"\"" + exe + "\" --testas " + s + " " + f
                                 + " >> rezultatai.txt\"";
+#else
+                std::string cmd = "\"" + exe + "\" --testas " + s + " " + f
+                                + " >> rezultatai.txt";
+#endif
                 std::system(cmd.c_str());
             }
     std::cout << "Baigta, žr. rezultatai.txt\n";

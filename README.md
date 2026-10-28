@@ -67,7 +67,11 @@ The `enum class` types that hold the program's settings: `Rezimas`, `Struktura`,
 A small `Timer` class built on `std::chrono::high_resolution_clock`, with `reset()` and `elapsed()`.
 
 ### utils.h / utils.cpp
-Helpers: `vidurkis()` (average), `mediana()` (median) and `utf8Plotis()`, which corrects `setw` column width for Lithuanian UTF-8 characters.
+Helpers:
+- `vidurkis()`, `mediana()`: calculate the average and the median of the homework grades.
+- `utf8Plotis()`: corrects `setw` column width for Lithuanian UTF-8 characters.
+- `pikineAtmintis()`: returns the peak memory used by the program so far, in bytes. Used by the memory test to measure how much the peak grew during grouping. On Windows it uses `GetProcessMemoryInfo`, and on Linux it reads `VmHWM` from `/proc/self/status`.
+- `dabartineAtmintis()`: returns how much memory the program is using right now, in bytes. Works the same way as `pikineAtmintis()`, but reads `VmRSS` on Linux.
 
 ### kursiokai.txt
 A small sample student file for testing the read-from-file mode.

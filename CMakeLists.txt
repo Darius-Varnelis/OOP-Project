@@ -20,3 +20,7 @@ add_executable(OOP_Project
         testai.cpp
         testai.h
 )
+
+if(WIN32)
+    target_link_libraries(OOP_Project PRIVATE psapi)
+endif()
