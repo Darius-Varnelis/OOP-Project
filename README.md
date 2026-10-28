@@ -160,7 +160,44 @@ Reading the file and writing the results take almost the same time with both con
 In short, List's strengths (easy insertion and removal in the middle) are not used by this program, while its weaknesses affect every step that touches the container. Vector is therefore the better choice.
 
 
+## Releases
 
+### [v1.0](https://github.com/Darius-Varnelis/OOP-Project/releases/tag/v1.0)
+- Added four more strategies for splitting students into passing and failing groups, next to the original `std::move` method:
+- Added timing for all grouping methods to the benchmark, for both `vector` and `list`.
+- Added peak memory measurement during grouping. 
+- The vector/list choice now applies to every container in the program.
+- Added an option to delete the generated benchmark files.
+- 
+### [v0.3](https://github.com/Darius-Varnelis/OOP-Project/releases/tag/v0.3)
+- Added `std::list` as an alternative to `std::vector`, chosen at runtime. All logic was rewritten as templates over the container.
+- Added a vector vs list benchmark that runs both containers right away.
+- Added a sorting order option (ascending/descending).
+- Manual entry now supports sorting, random grade generation and writing the results to a file.
+- Added an option to read student data from an existing file.
+- Moved the test logic and settings enums into separate files.
+- Fixed an out-of-memory bug and added error handling for invalid input..
+
+### [v0.2](https://github.com/Darius-Varnelis/OOP-Project/releases/tag/v0.2)
+- Added random test file generation. The whole file is built in a `stringstream` before being written to disk.
+- Added splitting students into failing (*nuskriaustukai*) and passing (*kietukai*) groups, each written to its own file.
+- Added a `Timer` class and timing of each step, repeated 5 times per file and averaged.
+- Added sorting by a user-chosen field.
+- Benchmark results are exported as a Markdown table.
+- Split `main.cpp` into separate source and header files, and switched to consistent naming (camelCase functions, PascalCase structs).
+- Added CMake build support.
+
+### [v0.1](https://github.com/Darius-Varnelis/OOP-Project/releases/tag/v0.1)
+- Added reading student data from a file (`kursiokai.txt`).
+- Sorted output and a separator line between the header and the data.
+- Added support for Lithuanian characters on Windows.
+- Readability improvements using `constexpr` and `enum class`.
+
+### [v.pradinė](https://github.com/Darius-Varnelis/OOP-Project/releases/tag/v.pradin%C4%97)
+- First version: manual student entry with homework and exam grades.
+- Final grade calculation using the average or the median of homework grades.
+- Input validation, including entry of an unknown number of grades.
+- An option to generate grades randomly, with a seeded random generator.
 
 
 ## Disclaimer
