@@ -18,16 +18,24 @@
 #include "results.h"
 #include "testai.h"
 
-int main() {
+int main(int argc, char* argv[]) {
+
 #ifdef _WIN32
     SetConsoleOutputCP(CP_UTF8);
     SetConsoleCP(CP_UTF8);
 #endif
 
+    if (argc == 4 && std::string(argv[1]) == "--testas")
+        return vienasTestas(argv[2], argv[3]);
+
     std::cout << std::fixed << std::setprecision(3);
     auto rezimas = static_cast<Rezimas>(nustatymai(
         "Koks programos rėžimas?",
-        "Studentų įvedimas ranka;Studentų nuskaitymas iš failo;Automatinis generavimas;Programos greitumo testavimas"));
+        "Studentų įvedimas ranka;Studentų nuskaitymas iš failo;Automatinis generavimas;Programos greitumo testavimas;Atminties naudojimo testas;"));
+    if (rezimas == Rezimas::Atmintis) {
+        paleistiAtmintiesTestus(argv[0]);
+        return 0;
+    }
     auto rusiuoti =
         static_cast<Rusiuoti>(nustatymai("Pagal ką rūšiuoti išvesties failus?", "Vardą;Pavardę;Galutinį balą"));
     auto tvarka =
@@ -113,7 +121,7 @@ int main() {
         }
 
     }
-    else {
+    if (rezimas == Rezimas::Failas) {
         std::string failoPavadinimas;
         std::cout << "Įveskite failo pavadinimą nuskaitymui: ";
         std::cin >> failoPavadinimas;
@@ -150,6 +158,7 @@ int main() {
             }
         }
     }
+
 }
 
 

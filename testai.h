@@ -86,4 +86,8 @@ void testas(int i, int j, const std::string& pavadinimas, Rezultatai& rezultatai
     std::cout << "  Viso apdorojimas: " << rezultatai.bendri[j] << " s\n\n";
 }
 Rezultatai testuPaleistuvas(int i, const Struktura& struktura, const Rusiuoti& rusiuoti, const Tvarka& tvarka);
+
+int vienasTestas(const std::string& strategija, const std::string& failas);
+
+void paleistiAtmintiesTestus(const std::string& exe);
 #endif //OOP_PROJECT_TESTAI_H

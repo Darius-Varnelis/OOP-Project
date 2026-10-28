@@ -40,6 +40,7 @@ double mediana(T paz) {
     if (n % 2 == 1) return *mid;
     return (*std::prev(mid) + *mid) / 2.0;
 }
-
+size_t pikineAtmintis();
+size_t dabartineAtmintis();
 
 #endif  // OOP_PROJECT_UTILS_H

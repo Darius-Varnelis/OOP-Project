@@ -4,6 +4,8 @@
 #include <iostream>
 #include <numeric>
 #include <vector>
+#include <windows.h>
+#include <psapi.h>
 using std::string;
 
 size_t utf8Ilgis(const std::string& tekstas) {
@@ -16,4 +18,15 @@ size_t utf8Ilgis(const std::string& tekstas) {
 
 int utf8Plotis(const std::string& tekstas) {
     return static_cast<int>(PLOTIS + tekstas.size() - utf8Ilgis(tekstas));
+}
+size_t pikineAtmintis() {
+    PROCESS_MEMORY_COUNTERS pmc;
+    GetProcessMemoryInfo(GetCurrentProcess(), &pmc, sizeof(pmc));
+    return pmc.PeakWorkingSetSize;
+}
+
+size_t dabartineAtmintis() {
+    PROCESS_MEMORY_COUNTERS pmc;
+    GetProcessMemoryInfo(GetCurrentProcess(), &pmc, sizeof(pmc));
+    return pmc.WorkingSetSize;
 }
