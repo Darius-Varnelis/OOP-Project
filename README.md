@@ -80,23 +80,34 @@ The goal of the benchmark is to compare performance between the Vector and List 
 ## Benchmark Results
 
 ### Vector
-|Student count|Average file read time|Average final grade calculation time|Average sorting time|Average grouping time|Average failed student output time|Average passing student output time|Average processing time|
-|---|---|---|---|---|---|---|---|
-|1000|0.005s|0.000s|0.000s|0.000s|0.002s|0.001s|0.011s|
-|10000|0.041s|0.000s|0.002s|0.001s|0.008s|0.008s|0.064s|
-|100000|0.415s|0.003s|0.021s|0.012s|0.070s|0.072s|0.598s|
-|1000000|4.268s|0.029s|0.229s|0.068s|0.767s|0.769s|6.136s|
-|10000000|44.835s|0.290s|2.741s|0.835s|8.490s|8.063s|65.260s|
+|Student count|Average file read time|Average final grade calculation time|Average sorting time|Average grouping time (Original Method)|Average grouping time (Method 1)|Average grouping time (Method 2)|Average grouping time (Original Method with Partition)|Average grouping time (Method 2 with copy_if and remove_if)|Average failed student output time|Average passing student output time|Average processing time|
+|---|---|---|---|---|---|---|---|---|---|---|---|
+|1000|0.005s|0.000s|0.000s|0.000s|0.000s|0.001s|0.000s|0.001s|0.002s|0.002s|0.017s|
+|10000|0.051s|0.001s|0.002s|0.001s|0.002s|0.005s|0.001s|0.003s|0.010s|0.009s|0.095s|
+|100000|0.462s|0.003s|0.023s|0.008s|0.024s|0.052s|0.023s|0.040s|0.081s|0.077s|0.834s|
+|1000000|4.611s|0.029s|0.280s|0.066s|0.278s|0.588s|0.281s|0.449s|0.784s|0.752s|8.718s|
+|10000000|48.629s|0.301s|2.840s|0.969s|3.768s|7.902s|3.496s|5.195s|7.744s|7.928s|98.032s|
+
 
 
 ### List
-|Student count|Average file read time|Average final grade calculation time|Average sorting time|Average grouping time|Average failed student output time|Average passing student output time|Average processing time|
-|---|---|---|---|---|---|---|---|
-|1000|0.005s|0.000s|0.000s|0.000s|0.002s|0.001s|0.012s|
-|10000|0.046s|0.001s|0.002s|0.001s|0.009s|0.009s|0.071s|
-|100000|0.501s|0.007s|0.039s|0.031s|0.093s|0.087s|0.763s|
-|1000000|4.385s|0.056s|0.818s|0.413s|0.834s|0.841s|7.352s|
-|10000000|45.701s|0.608s|15.013s|5.730s|8.855s|8.476s|84.389s|
+|Student count|Average file read time|Average final grade calculation time|Average sorting time|Average grouping time (Original Method)|Average grouping time (Method 1)|Average grouping time (Method 2)|Average grouping time (Original Method with Partition)|Average grouping time (Method 2 with copy_if and remove_if)|Average failed student output time|Average passing student output time|Average processing time|
+|---|---|---|---|---|---|---|---|---|---|---|---|
+|1000|0.007s|0.000s|0.000s|0.000s|0.002s|0.004s|0.002s|0.004s|0.002s|0.002s|0.032s|
+|10000|0.060s|0.002s|0.003s|0.002s|0.022s|0.036s|0.023s|0.039s|0.009s|0.010s|0.246s|
+|100000|0.576s|0.019s|0.035s|0.035s|0.226s|0.361s|0.220s|0.356s|0.081s|0.081s|2.451s|
+|1000000|5.916s|0.203s|0.912s|0.498s|2.827s|4.208s|3.051s|4.450s|0.854s|0.823s|28.461s|
+|10000000|65.188s|2.059s|16.488s|10.842s|27.195s|49.420s|26.148s|41.602s|9.061s|9.110s|340.677s|
+
+### Memory usage when grouping 10,000,000 students
+|Method|Peak memory used (MiB)|
+|---|---|
+|Original|1665 MiB|
+|Method 1|2688 MiB|
+|Method 2|1665 MiB|
+|Method 1 with Partition|991 MiB|
+|Method 2 with copy_if and remove_if|1665 MiB| 
+
 
 
 ### Testing Conditions
