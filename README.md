@@ -30,14 +30,14 @@ Most of the logic is written as function templates over a generic `Konteineris` 
 ### main.cpp
 The program's entry point. It asks the user to choose a mode (manual entry, random generation, reading from a file, or benchmark), a sort field and order, a container, an output target and which statistic to show. It then calls the matching template function with either `std::vector<Studentas>` or `std::list<Studentas>`.
 
-### studentas.h / studentas.cpp
+### studentas.h
 - `struct Studentas`: first name, last name, homework grades, exam grade and final grade.
 - `skaiciuotiGalutini()`: calculates the final grade (0.4 × homework average + 0.6 × exam).
 - `rusiuotiStudentus()`: sorts by first name, last name or final grade, in ascending or descending order. Uses `std::sort` for `vector` and the member `list::sort()` for `list`.
 - `skirstytiStudentusMano()`: splits students into failing (*nuskriaustukai*, final grade < 5) and passing (*kietukai*, final grade ≥ 5) groups using `std::move` to move students from the original container into two new ones, leaving the original one empty..
 - `skirstytiStudentus1()`: splits students into two groups in a similar way to `skirstytiStudentusMano()`, using `push_back` instead of `std::move`.
 - `skirstytiStudentus2()`: splits students into two groups by finding failing ones, moving them into a new container and erasing them from the original one. The end result is 2 containers with passing and failing students.
-- `skirstytiStudentusPartition()`: works as an improved version of `skirstytiStudentus1()` that groups students into two new containers, first partitioning students by passing grade using `std::stable_partition`.
+- `skirstytiStudentusPartition()`: works as an improved version of `skirstytiStudentusMano()` that groups students into two new containers, first partitioning students by passing grade using `std::stable_partition`.
 - `skirstytiStudentusCopyIf()`: works as an improved version of `skirstytiStudentus2()` that splits students into two groups by using `copy_if` to find all students that failed and moving them into a new container. Then the moved students are erased using `erase` and `remove_if`.
 
 ### manual.h / manual.cpp
@@ -55,7 +55,7 @@ File I/O:
 - `arFailaiEgzistuoja()`: checks whether the benchmark files already exist, so they don't have to be regenerated.
 
 ### testai.h / testai.cpp
-The benchmark. `testas()` times each step (read, final grade calculation, sort, grouping, writing both groups) on one file. `testuPaleistuvas()` repeats the test 5 times per file for the chosen container and averages the results.
+The benchmark. `testas()` times each step (read, final grade calculation, sort, grouping, writing both groups) on one file. `testuPaleistuvas()` repeats the test 5 times per file for the chosen container and averages the results. `paleistiAtmintiesTestus()` runs the memory test by launching the program again as a separate process for every grouping method, so that the peak memory resets between tests. `vienasTestas()` is the test run inside that process: it reads the students, groups them with the chosen method and outputs how much peak memory grew during grouping.
 
 ### results.h / results.cpp
 `struct Rezultatai` stores the average time for each step. `spausdintiLentele()` exports all results as a Markdown table, which is where the tables in this README come from.
@@ -150,25 +150,35 @@ The Original method, moving students into two new containers, is the best balanc
 
 #### Vector vs list
 
-The results show that `vector` is the better fit for this program. At 10,000,000 students the total processing time was 65.3s with Vector versus 84.4s with List, about 29% slower. The gap starts to show at 100,000 students and widens as the data grows.
+The results show that `vector` is the better fit for this program. At 10,000,000 students the total processing time was 98.0s with Vector versus 340.7s with List, about 248% slower. The gap starts to show at 1,000 students and widens as the data grows.
 
-Reading the file and writing the results take almost the same time with both containers, because these steps are dominated by text parsing and disk I/O rather than by the container. The difference comes from three steps:
+Reading the file and writing the results show the smallest relative difference between the containers, because these steps are dominated by text parsing and disk I/O rather than by the container. The largest differences come from three steps:
 
-- Sorting showed the largest gap: at 10,000,000 students it took 2.7s with Vector and 15.0s with List, roughly 5.5x slower. Vector uses std::sort (introsort), which needs random-access iterators and works on elements stored next to each other in memory. List cannot use std::sort and relies on its own list::sort (merge sort) which is significantly slower.
-- Grouping was about 7x slower with List (0.8s vs 5.7s). Each push_back into a List allocates a new node on the heap and copies the student into it. Vector only reallocates occasionally, since its capacity grows geometrically. The List version could be improved by moving nodes between lists with splice, which needs no allocation or copying.
-- Final grade calculation was about 2x slower with List. The difference comes from memory layout: Vector stores its elements next to each other, while List elements are scattered all across memory, which makes it more difficult for the CPU to access.
+- Sorting showed a large gap: at 10,000,000 students it took 2.8s with Vector and 16.5s with List, roughly 5.8x slower. Vector uses std::sort (introsort), which needs random-access iterators and works on elements stored next to each other in memory. List cannot use std::sort and relies on its own list::sort (merge sort) which is significantly slower.
+- Grouping was about 11x slower with List (1.0s vs 10.8s). Each push_back into a List allocates a new node on the heap and moves the student into it. Vector only reallocates occasionally, since its capacity grows geometrically. The List version could be improved by moving nodes between lists with splice, which needs no allocation or copying.
+- Final grade calculation was about 7x slower with List. The difference comes from memory layout: Vector stores its elements next to each other, while List elements are scattered all across memory, which makes it more difficult for the CPU to access.
 In short, List's strengths (easy insertion and removal in the middle) are not used by this program, while its weaknesses affect every step that touches the container. Vector is therefore the better choice.
 
+
+## Disclaimer
+The generation of the text files is likely to take a large amount of time (about 30 seconds) as well as a large amount of storage (about 1GB). Further processing of the files (5 runs for every file) takes about 40 minutes on the release build.
+
+![](images/Screenshot_Sizes.png)
 
 ## Releases
 
 ### [v1.0](https://github.com/Darius-Varnelis/OOP-Project/releases/tag/v1.0)
 - Added four more strategies for splitting students into passing and failing groups, next to the original `std::move` method:
+  - **Method 1** (`skirstytiStudentus1`) copies students into two new containers.
+  - **Method 2** (`skirstytiStudentus2`) moves failing students into a new container and removes them from the original one by moving the last element into the gap and calling `pop_back()`.
+  - **Original with partition** (`skirstytiStudentusPartition`) groups students with `std::stable_partition`, then bulk-moves each group with `insert` and `std::make_move_iterator`.
+  - **Method 2 with `copy_if` / `remove_if`** (`skirstytiStudentusCopyIf`) moves failing students out with `std::copy_if`, then removes them with the erase–remove idiom.
 - Added timing for all grouping methods to the benchmark, for both `vector` and `list`.
-- Added peak memory measurement during grouping. 
+- Added peak memory measurement during grouping. Each test runs in a separate process so the peak counter resets between methods.
 - The vector/list choice now applies to every container in the program.
 - Added an option to delete the generated benchmark files.
-- 
+- README: added a grouping method comparison (speed and memory) and updated the benchmark results.
+
 ### [v0.3](https://github.com/Darius-Varnelis/OOP-Project/releases/tag/v0.3)
 - Added `std::list` as an alternative to `std::vector`, chosen at runtime. All logic was rewritten as templates over the container.
 - Added a vector vs list benchmark that runs both containers right away.
@@ -176,7 +186,8 @@ In short, List's strengths (easy insertion and removal in the middle) are not us
 - Manual entry now supports sorting, random grade generation and writing the results to a file.
 - Added an option to read student data from an existing file.
 - Moved the test logic and settings enums into separate files.
-- Fixed an out-of-memory bug and added error handling for invalid input..
+- Fixed an out-of-memory bug and added error handling for invalid input.
+- README: added a program structure overview, images and a vector vs list analysis.
 
 ### [v0.2](https://github.com/Darius-Varnelis/OOP-Project/releases/tag/v0.2)
 - Added random test file generation. The whole file is built in a `stringstream` before being written to disk.
@@ -193,14 +204,8 @@ In short, List's strengths (easy insertion and removal in the middle) are not us
 - Added support for Lithuanian characters on Windows.
 - Readability improvements using `constexpr` and `enum class`.
 
-### [v.pradinė](https://github.com/Darius-Varnelis/OOP-Project/releases/tag/v.pradin%C4%97)
+### [v.pradinė](https://github.com/Darius-Varnelis/OOP-Project/releases/tag/v.pradin%C4%971)
 - First version: manual student entry with homework and exam grades.
 - Final grade calculation using the average or the median of homework grades.
 - Input validation, including entry of an unknown number of grades.
 - An option to generate grades randomly, with a seeded random generator.
-
-
-## Disclaimer
-The generation of the text files is likely to take a large amount of time (about 30 seconds) as well as a large amount of storage (about 1GB). Further processing of the files (5 runs for every file) takes about 6 minutes on the release build and about 15 minutes on the debug build.
-
-![](images/Screenshot_Sizes.png)
