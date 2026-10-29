@@ -37,7 +37,7 @@ The program's entry point. It asks the user to choose a mode (manual entry, rand
 - `skirstytiStudentusMano()`: splits students into failing (*nuskriaustukai*, final grade < 5) and passing (*kietukai*, final grade ≥ 5) groups using `std::move` to move students from the original container into two new ones, leaving the original one empty..
 - `skirstytiStudentus1()`: splits students into two groups in a similar way to `skirstytiStudentusMano()`, using `push_back` instead of `std::move`.
 - `skirstytiStudentus2()`: splits students into two groups by finding failing ones, moving them into a new container and erasing them from the original one. The end result is 2 containers with passing and failing students.
-- `skirstytiStudentusPartition()`: works as an improved version of `skirstytiStudentusMano()` that groups students into two new containers, first partitioning students by passing grade using `std::stable_partition`.
+- `skirstytiStudentusPartition()`: works as an improved version of `skirstytiStudentusMano()` that groups students into two new containers, first partitioning students by passing grade using `std::partition`.
 - `skirstytiStudentusCopyIf()`: works as an improved version of `skirstytiStudentus2()` that splits students into two groups by using `copy_if` to find all students that failed and moving them into a new container. Then the moved students are erased using `erase` and `remove_if`.
 
 ### manual.h / manual.cpp
@@ -90,22 +90,22 @@ The goal of the benchmark is to compare performance between the Vector and List 
 ### Vector
 |Student count|Average file read time|Average final grade calculation time|Average sorting time|Average grouping time (Original Method)|Average grouping time (Method 1)|Average grouping time (Method 2)|Average grouping time (Original Method with Partition)|Average grouping time (Method 2 with copy_if and remove_if)|Average failed student output time|Average passing student output time|Average processing time|
 |---|---|---|---|---|---|---|---|---|---|---|---|
-|1000|0.005s|0.000s|0.000s|0.000s|0.000s|0.001s|0.000s|0.001s|0.002s|0.002s|0.017s|
-|10000|0.051s|0.001s|0.002s|0.001s|0.002s|0.005s|0.001s|0.003s|0.010s|0.009s|0.095s|
-|100000|0.462s|0.003s|0.023s|0.008s|0.024s|0.052s|0.023s|0.040s|0.081s|0.077s|0.834s|
-|1000000|4.611s|0.029s|0.280s|0.066s|0.278s|0.588s|0.281s|0.449s|0.784s|0.752s|8.718s|
-|10000000|48.629s|0.301s|2.840s|0.969s|3.768s|7.902s|3.496s|5.195s|7.744s|7.928s|98.032s|
+|1000|0.008s|0.000s|0.000s|0.000s|0.000s|0.000s|0.000s|0.000s|0.002s|0.002s|0.016s|
+|10000|0.051s|0.000s|0.002s|0.001s|0.001s|0.000s|0.000s|0.000s|0.009s|0.008s|0.089s|
+|100000|0.442s|0.003s|0.021s|0.008s|0.015s|0.002s|0.003s|0.003s|0.088s|0.087s|0.792s|
+|1000000|4.648s|0.029s|0.221s|0.065s|0.184s|0.019s|0.029s|0.032s|0.875s|0.907s|8.642s|
+|10000000|48.179s|0.293s|2.528s|0.839s|2.202s|0.198s|0.252s|0.295s|9.339s|9.371s|93.515s|
 
 
 
 ### List
 |Student count|Average file read time|Average final grade calculation time|Average sorting time|Average grouping time (Original Method)|Average grouping time (Method 1)|Average grouping time (Method 2)|Average grouping time (Original Method with Partition)|Average grouping time (Method 2 with copy_if and remove_if)|Average failed student output time|Average passing student output time|Average processing time|
 |---|---|---|---|---|---|---|---|---|---|---|---|
-|1000|0.007s|0.000s|0.000s|0.000s|0.002s|0.004s|0.002s|0.004s|0.002s|0.002s|0.032s|
-|10000|0.060s|0.002s|0.003s|0.002s|0.022s|0.036s|0.023s|0.039s|0.009s|0.010s|0.246s|
-|100000|0.576s|0.019s|0.035s|0.035s|0.226s|0.361s|0.220s|0.356s|0.081s|0.081s|2.451s|
-|1000000|5.916s|0.203s|0.912s|0.498s|2.827s|4.208s|3.051s|4.450s|0.854s|0.823s|28.461s|
-|10000000|65.188s|2.059s|16.488s|10.842s|27.195s|49.420s|26.148s|41.602s|9.061s|9.110s|340.677s|
+|1000|0.006s|0.000s|0.000s|0.000s|0.001s|0.000s|0.000s|0.000s|0.002s|0.002s|0.025s|
+|10000|0.059s|0.002s|0.002s|0.002s|0.016s|0.001s|0.002s|0.001s|0.009s|0.018s|0.237s|
+|100000|0.578s|0.020s|0.037s|0.029s|0.144s|0.016s|0.031s|0.020s|0.090s|0.088s|2.245s|
+|1000000|5.984s|0.196s|0.757s|0.312s|1.616s|0.156s|0.322s|0.234s|1.039s|1.053s|24.717s|
+|10000000|73.433s|2.220s|14.914s|7.061s|17.493s|1.649s|3.647s|2.559s|12.659s|12.886s|322.724s|
 
 ### Memory usage when grouping 10,000,000 students
 |Method|Peak memory used (MiB)|
@@ -129,17 +129,19 @@ Test system:
 - Results: Average of 5 runs on pre-generated files
 - Files were generated once per build
 - Optimizations used: -O3 -DNDEBUG
-- Sorted by final grade descending
+- Sorted by final grade descending, after grouping
 
 ### Grouping method comparison
 #### Speed
-The Original method is the fastest for both containers: 0.97 s for 10M students with vector, and 10.8 s with list. It touches each student once and only moves pointers, without copying any string or grade data.
+Method 2 was the fastest for both containers: 0.20 s for 10M students with vector, and 1.65 s with list. It creates only one new container and only moves the failing students (about half of all students), while the passing ones stay in the original container. Each failing student costs a move into nuskriaustukai, a move of the last element into the gap and deletion of the shell made from `pop_back()`, but nothing has to be done with the passing students.
 
-Method 1 is about 3.9× slower than the Original with vector (3.77 s) and 2.5× slower with list (27.2 s). Copying a student allocates new memory for its name, surname and grades, and with millions of students the time spent accumulates.
+The copy_if / remove_if version (0.30 s / 2.56 s) moves the same students as Method 2, but makes two full passes over grupe, which makes it slower than Method 2.
 
-Method 2 was the slowest in both cases: 7.90 s with vector and 49.4 s with list. It creates only one new container, but each failing student costs several operations: a move into nuskriaustukai, a move of the last element into the gap, and deletion of the shell made from `pop_back()`. 
+The partition method was the second fastest with vector (0.25 s) and the third with list (3.65 s). It moves every student into a new container, but bulk insert knows the number of elements in advance and allocates each container only once. Since students are sorted after grouping, `std::partition` is used instead of `std::stable_partition`, as the order of students doesn't need to be kept.
 
-The partition method (3.50 s / 26.1 s) was no faster than copying. The speed of method could be improved by using `std::partition` instead of `std::stable_partition`, but it was chosen here as students are sorted before grouping. The copy_if / remove_if version (5.20 s / 41.6 s) makes two full passes over grupe, which puts it between Method 1 and Method 2.
+The Original method (0.84 s / 7.06 s) touches each student once and only moves pointers, without copying any string or grade data. However, it moves every student with `push_back`, so with vector both new containers have to reallocate repeatedly as they grow, moving the students again each time. With list there is no reallocation, but every `push_back` allocates a new node. This makes it about 4× slower than Method 2.
+
+Method 1 is the slowest: about 2.6× slower than the Original with vector (2.20 s) and 2.5× slower with list (17.5 s). Copying a student allocates new memory for its name, surname and grades, and with millions of students the time spent accumulates.
 
 #### Memory
 
@@ -150,17 +152,17 @@ The Original method, Method 2 and the copy_if version all used +1665 MiB. Since 
 The partition method used the least memory (+991 MiB). Bulk insert knows the number of elements in advance and allocates each container once, at just the needed size, so there is no reallocation.
 ##### Conclusion
 
-The Original method, moving students into two new containers, is the best balance of speed and memory. Method 1 is the worst choice on both counts, because copying duplicates all the data. Removing students from the original container (Method 2) saves no memory in practice compared to the Original method and is the slowest, especially with list.
+Method 2, removing failing students from the original container, is the fastest with both containers, because it only moves about half of the students. The partition method used the least memory and was nearly as fast with vector, which makes it the best balance of speed and memory. Method 1 is the worst choice on both counts, because copying duplicates all the data. The Original method is simple, but moving every student with `push_back` makes it noticeably slower than the methods using algorithms.
 
 #### Vector vs list
 
-The results show that `vector` is the better fit for this program. At 10,000,000 students the total processing time was 98.0s with Vector versus 340.7s with List, about 248% slower. The gap starts to show at 1,000 students and widens as the data grows.
+The results show that `vector` is the better fit for this program. At 10,000,000 students the total processing time was 93.5s with Vector versus 322.7s with List, about 245% slower. The gap starts to show at 1,000 students and widens as the data grows.
 
 Reading the file and writing the results show the smallest relative difference between the containers, because these steps are dominated by text parsing and disk I/O rather than by the container. The largest differences come from three steps:
 
-- Sorting showed a large gap: at 10,000,000 students it took 2.8s with Vector and 16.5s with List, roughly 5.8x slower. Vector uses std::sort (introsort), which needs random-access iterators and works on elements stored next to each other in memory. List cannot use std::sort and relies on its own list::sort (merge sort) which is significantly slower.
-- Grouping was about 11x slower with List (1.0s vs 10.8s). Each push_back into a List allocates a new node on the heap and moves the student into it. Vector only reallocates occasionally, since its capacity grows geometrically. The List version could be improved by moving nodes between lists with splice, which needs no allocation or copying.
-- Final grade calculation was about 7x slower with List. The difference comes from memory layout: Vector stores its elements next to each other, while List elements are scattered all across memory, which makes it more difficult for the CPU to access.
+- Sorting showed a large gap: at 10,000,000 students it took 2.5s with Vector and 14.9s with List, roughly 5.9x slower. Vector uses std::sort (introsort), which needs random-access iterators and works on elements stored next to each other in memory. List cannot use std::sort and relies on its own list::sort (merge sort) which is significantly slower.
+- Grouping was about 8x slower with List (0.8s vs 7.1s). Each push_back into a List allocates a new node on the heap and moves the student into it. Vector only reallocates occasionally, since its capacity grows geometrically. The List version could be improved by moving nodes between lists with splice, which needs no allocation or copying.
+- Final grade calculation was about 8x slower with List. The difference comes from memory layout: Vector stores its elements next to each other, while List elements are scattered all across memory, which makes it more difficult for the CPU to access.
 In short, List's strengths (easy insertion and removal in the middle) are not used by this program, while its weaknesses affect every step that touches the container. Vector is therefore the better choice.
 
 
@@ -175,7 +177,7 @@ The generation of the text files is likely to take a large amount of time (about
 - Added four more strategies for splitting students into passing and failing groups, next to the original `std::move` method:
   - **Method 1** (`skirstytiStudentus1`) copies students into two new containers.
   - **Method 2** (`skirstytiStudentus2`) moves failing students into a new container and removes them from the original one by moving the last element into the gap and calling `pop_back()`.
-  - **Original with partition** (`skirstytiStudentusPartition`) groups students with `std::stable_partition`, then bulk-moves each group with `insert` and `std::make_move_iterator`.
+  - **Original with partition** (`skirstytiStudentusPartition`) groups students with `std::partition`, then bulk-moves each group with `insert` and `std::make_move_iterator`.
   - **Method 2 with `copy_if` / `remove_if`** (`skirstytiStudentusCopyIf`) moves failing students out with `std::copy_if`, then removes them with the erase–remove idiom.
 - Added timing for all grouping methods to the benchmark, for both `vector` and `list`.
 - Added peak memory measurement during grouping. Each test runs in a separate process so the peak counter resets between methods.

@@ -29,14 +29,14 @@ int vienasTestas(const std::string& strategija, const std::string& failas) {
     std::size_t pries = dabartineAtmintis();
     std::size_t pikasPries = pikineAtmintis();
 
-    if (strategija == "copy") {
-       skirstytiStudentusCopyIf(grupe, nuskriaustukai);
+    if (strategija == "2partition") {
+       skirstytiStudentus2Partition(grupe, nuskriaustukai);
     }
     else if (strategija == "move") {
         skirstytiStudentusMano(grupe, nuskriaustukai, kietukai);
     }
-    else if (strategija == "partition") {
-        skirstytiStudentusPartition(grupe, nuskriaustukai, kietukai);
+    else if (strategija == "1partition") {
+        skirstytiStudentus1Partition(grupe, nuskriaustukai, kietukai);
     }
     else if (strategija == "1") {
         skirstytiStudentus1(grupe,nuskriaustukai, kietukai);
@@ -55,7 +55,7 @@ int vienasTestas(const std::string& strategija, const std::string& failas) {
 
 
 void paleistiAtmintiesTestus(const std::string& exe) {
-    std::vector<std::string> strategijos = {"move", "1", "2", "copy", "partition"};
+    std::vector<std::string> strategijos = {"move", "1", "2", "1partition", "2partition"};
     std::vector<std::string> failai = {"kursiokai10000000.txt"};
 
     for (const auto& f : failai)

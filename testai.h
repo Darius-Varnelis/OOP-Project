@@ -10,6 +10,10 @@
 #include "studentas.h"
 #include "timer.h"
 
+// Ištuština konteinerį ir atlaisvina jo atmintį, kad kiekvienas testas prasidėtų nuo tuščio konteinerio
+template <typename C>
+void isvalyti(C& c) { C().swap(c); }
+
 template <template <typename...> class Konteineris>
 void testas(int i, int j, const std::string& pavadinimas, Rezultatai& rezultatai, Rusiuoti rusiuoti, Tvarka tvarka) {
     Konteineris<Studentas<Konteineris>> grupe;
@@ -38,8 +42,8 @@ void testas(int i, int j, const std::string& pavadinimas, Rezultatai& rezultatai
     std::cout << "  Dalijimas į dvi grupes mano metodu: " << rezultatai.dalijimaiMano[j] << " s\n";
 
     grupe = kopija;
-    nuskriaustukai.clear();
-    kietukai.clear();
+    isvalyti(nuskriaustukai);
+    isvalyti(kietukai);
     t.reset();
     skirstytiStudentus1(grupe, nuskriaustukai, kietukai);
     rezultatai.dalijimai1.push_back(t.elapsed());
@@ -48,27 +52,27 @@ void testas(int i, int j, const std::string& pavadinimas, Rezultatai& rezultatai
 
 
     kietukai = kopija;
-    nuskriaustukai.clear();
+    isvalyti(nuskriaustukai);
     t.reset();
     skirstytiStudentus2(kietukai, nuskriaustukai);
     rezultatai.dalijimai2.push_back(t.elapsed());
     std::cout << "  Dalijimas į dvi grupes antru metodu: " << rezultatai.dalijimai2[j] << " s\n";
 
     grupe = kopija;
-    nuskriaustukai.clear();
-    kietukai.clear();
+    isvalyti(nuskriaustukai);
+    isvalyti(kietukai);
     t.reset();
-    skirstytiStudentusPartition(grupe, nuskriaustukai, kietukai);
+    skirstytiStudentus1Partition(grupe, nuskriaustukai, kietukai);
     grupe.clear();
     rezultatai.dalijimai3.push_back(t.elapsed());
-    std::cout <<"  Dalijimas į dvi grupes patobulintu mano metodu: " << rezultatai.dalijimai3[j] << " s\n";
+    std::cout <<"  Dalijimas į dvi grupes pirmu metodu su partition: " << rezultatai.dalijimai3[j] << " s\n";
 
     kietukai = kopija;
-    nuskriaustukai.clear();
+    isvalyti(nuskriaustukai);
     t.reset();
-    skirstytiStudentusCopyIf(kietukai, nuskriaustukai);
+    skirstytiStudentus2Partition(kietukai, nuskriaustukai);
     rezultatai.dalijimai4.push_back(t.elapsed());
-    std::cout << "  Dalijimas į dvi grupes patobulintu antru metodu: " << rezultatai.dalijimai4[j] << " s\n";
+    std::cout << "  Dalijimas į dvi grupes antru metodu su partition: " << rezultatai.dalijimai4[j] << " s\n";
 
     t.reset();
 

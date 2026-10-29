@@ -83,9 +83,9 @@ void skirstytiStudentus2(Konteineris<Studentas<Konteineris>>& grupe,
 }
 
 template <template <typename...> class Konteineris>
-void skirstytiStudentusPartition(Konteineris<Studentas<Konteineris>>& grupe,
-                                 Konteineris<Studentas<Konteineris>>& nuskriaustukai,
-                                 Konteineris<Studentas<Konteineris>>& kietukai) {
+void skirstytiStudentus1Partition(Konteineris<Studentas<Konteineris>>& grupe,
+                                  Konteineris<Studentas<Konteineris>>& nuskriaustukai,
+                                  Konteineris<Studentas<Konteineris>>& kietukai) {
     auto riba = std::partition(grupe.begin(), grupe.end(),
         [](const auto& st) { return st.galutinis >= ISLAIKYMO_RIBA; });
 
@@ -98,17 +98,14 @@ void skirstytiStudentusPartition(Konteineris<Studentas<Konteineris>>& grupe,
 }
 
 template <template <typename...> class Konteineris>
-void skirstytiStudentusCopyIf(Konteineris<Studentas<Konteineris>>& grupe,
-                              Konteineris<Studentas<Konteineris>>& nuskriaustukai) {
-    auto nepraejo = [](const Studentas<Konteineris>& st) {
-        return st.galutinis < ISLAIKYMO_RIBA;
-    };
+void skirstytiStudentus2Partition(Konteineris<Studentas<Konteineris>>& grupe,
+                                  Konteineris<Studentas<Konteineris>>& nuskriaustukai) {
+    auto riba = std::partition(grupe.begin(), grupe.end(),
+        [](const auto& st) { return st.galutinis >= ISLAIKYMO_RIBA; });
 
-    std::copy_if(std::make_move_iterator(grupe.begin()),
-                 std::make_move_iterator(grupe.end()),
-                 std::back_inserter(nuskriaustukai), nepraejo);
-
-    grupe.erase(std::remove_if(grupe.begin(), grupe.end(), nepraejo), grupe.end());
+    nuskriaustukai.insert(nuskriaustukai.end(),
+        std::make_move_iterator(riba), std::make_move_iterator(grupe.end()));
+    grupe.erase(riba, grupe.end());
 }
 
 #endif  // OOP_PROJECT_STUDENTAS_H

@@ -14,12 +14,12 @@ void header(std::ostream& out) {
         << "Average grouping time (Original Method)" << "|"
         << "Average grouping time (Method 1)" << "|"
         << "Average grouping time (Method 2)" << "|"
-        << "Average grouping time (Original Method with Partition)"
-        << "Average grouping time (Method 2 with copy_if and remove_if)"
+        << "Average grouping time (Method 1 with partition)" << "|"
+        << "Average grouping time (Method 2 with partition)" << "|"
         << "Average failed student output time" << "|"
         << "Average passing student output time" << "|"
         << "Average processing time" << "|\n";
-    out << "|---|---|---|---|---|---|---|---|\n";
+    out << "|---|---|---|---|---|---|---|---|---|---|---|---|\n";
 }
 
 void eilute(std::ostream& out, const Rezultatai& rezultatai) {
