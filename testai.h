@@ -42,8 +42,8 @@ void testas(int i, int j, const std::string& pavadinimas, Rezultatai& rezultatai
     kietukai.clear();
     t.reset();
     skirstytiStudentus1(grupe, nuskriaustukai, kietukai);
-    grupe.clear();
     rezultatai.dalijimai1.push_back(t.elapsed());
+    grupe.clear();
     std::cout <<"  Dalijimas į dvi grupes pirmu metodu: " << rezultatai.dalijimai1[j] << " s\n";
 
 
