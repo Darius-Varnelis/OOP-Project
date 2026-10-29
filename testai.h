@@ -36,8 +36,8 @@ void testas(int i, int j, const std::string& pavadinimas, Rezultatai& rezultatai
     Konteineris<Studentas<Konteineris>> nuskriaustukai, kietukai;
     t.reset();
     skirstytiStudentusMano(grupe, nuskriaustukai, kietukai);
-    grupe.clear();
     rezultatai.dalijimaiMano.push_back(t.elapsed());
+    grupe.clear();
     std::cout << "  Dalijimas į dvi grupes mano metodu: " << rezultatai.dalijimaiMano[j] << " s\n";
 
     grupe = kopija;
@@ -62,8 +62,8 @@ void testas(int i, int j, const std::string& pavadinimas, Rezultatai& rezultatai
     isvalyti(kietukai);
     t.reset();
     skirstytiStudentus1Partition(grupe, nuskriaustukai, kietukai);
-    grupe.clear();
     rezultatai.dalijimai3.push_back(t.elapsed());
+    grupe.clear();
     std::cout <<"  Dalijimas į dvi grupes pirmu metodu su partition: " << rezultatai.dalijimai3[j] << " s\n";
 
     kietukai = kopija;
