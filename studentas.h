@@ -86,7 +86,7 @@ template <template <typename...> class Konteineris>
 void skirstytiStudentusPartition(Konteineris<Studentas<Konteineris>>& grupe,
                                  Konteineris<Studentas<Konteineris>>& nuskriaustukai,
                                  Konteineris<Studentas<Konteineris>>& kietukai) {
-    auto riba = std::stable_partition(grupe.begin(), grupe.end(),
+    auto riba = std::partition(grupe.begin(), grupe.end(),
         [](const auto& st) { return st.galutinis >= ISLAIKYMO_RIBA; });
 
     kietukai.insert(kietukai.end(),

@@ -26,11 +26,7 @@ void testas(int i, int j, const std::string& pavadinimas, Rezultatai& rezultatai
     rezultatai.galutiniai.push_back(t.elapsed());
     std::cout << "  Galutinių skaičiavimas: " << rezultatai.galutiniai[j] << " s\n";
 
-    t.reset();
 
-    rusiuotiStudentus(grupe, rusiuoti, tvarka);
-    rezultatai.rusiavimai.push_back(t.elapsed());
-    std::cout << "  Rūšiavimas: " << rezultatai.rusiavimai[j] << " s\n";
 
 
     auto kopija = grupe;
@@ -53,6 +49,7 @@ void testas(int i, int j, const std::string& pavadinimas, Rezultatai& rezultatai
 
     kietukai = kopija;
     nuskriaustukai.clear();
+    t.reset();
     skirstytiStudentus2(kietukai, nuskriaustukai);
     rezultatai.dalijimai2.push_back(t.elapsed());
     std::cout << "  Dalijimas į dvi grupes antru metodu: " << rezultatai.dalijimai2[j] << " s\n";
@@ -61,17 +58,24 @@ void testas(int i, int j, const std::string& pavadinimas, Rezultatai& rezultatai
     nuskriaustukai.clear();
     kietukai.clear();
     t.reset();
-    skirstytiStudentus1(grupe, nuskriaustukai, kietukai);
+    skirstytiStudentusPartition(grupe, nuskriaustukai, kietukai);
     grupe.clear();
     rezultatai.dalijimai3.push_back(t.elapsed());
     std::cout <<"  Dalijimas į dvi grupes patobulintu mano metodu: " << rezultatai.dalijimai3[j] << " s\n";
 
     kietukai = kopija;
     nuskriaustukai.clear();
+    t.reset();
     skirstytiStudentusCopyIf(kietukai, nuskriaustukai);
     rezultatai.dalijimai4.push_back(t.elapsed());
-    std::cout << "  Dalijimas į dvi grupes antru metodu: " << rezultatai.dalijimai4[j] << " s\n";
+    std::cout << "  Dalijimas į dvi grupes patobulintu antru metodu: " << rezultatai.dalijimai4[j] << " s\n";
 
+    t.reset();
+
+    rusiuotiStudentus(kietukai, rusiuoti, tvarka);
+    rusiuotiStudentus(nuskriaustukai, rusiuoti, tvarka);
+    rezultatai.rusiavimai.push_back(t.elapsed());
+    std::cout << "  Rūšiavimas: " << rezultatai.rusiavimai[j] << " s\n";
 
     t.reset();
     isvestiStudentus(nuskriaustukai, failoPavadinimas("nuskriaustukai", i));
