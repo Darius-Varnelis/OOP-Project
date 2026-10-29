@@ -62,7 +62,7 @@ void paleistiAtmintiesTestus(const std::string& exe) {
         for (const auto& s : strategijos)
             for (int i = 0; i < KARTAI; ++i) {
 #ifdef _WIN32
-                // cmd.exe reikalauja papildomų kabučių aplink visą komandą
+
                 std::string cmd = "\"\"" + exe + "\" --testas " + s + " " + f
                                 + " >> rezultatai.txt\"";
 #else

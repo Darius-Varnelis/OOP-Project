@@ -10,7 +10,6 @@
 #include "studentas.h"
 #include "timer.h"
 
-// Ištuština konteinerį ir atlaisvina jo atmintį, kad kiekvienas testas prasidėtų nuo tuščio konteinerio
 template <typename C>
 void isvalyti(C& c) { C().swap(c); }
 
